@@ -14,7 +14,6 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -22,17 +21,17 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class NoticeQueryRepositoryImpl implements NoticeQueryRepository {
+class NoticeQueryRepositoryImpl implements NoticeQueryRepository {
 	private final JPAQueryFactory jpaQueryFactory;
 
 	private QNoticeEntity notice = QNoticeEntity.noticeEntity;
 
 	@Override
-	public Page<NoticeSearchResponse> findAll(Pageable pageable) {
+	public Page<NoticeSearchResponse> searchAll(Pageable pageable) {
 		JPAQuery<NoticeSearchResponse> query = searchNoticeQuery();
 
-		PathBuilder pathBuilder = new PathBuilder(notice.getType(), notice.getMetadata());
 		for (Sort.Order order : pageable.getSort()) {
+			PathBuilder pathBuilder = new PathBuilder(notice.getType(), notice.getMetadata());
 			query.orderBy(new OrderSpecifier(order.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(order.getProperty())));
 		}
 
@@ -52,10 +51,8 @@ public class NoticeQueryRepositoryImpl implements NoticeQueryRepository {
 				notice.title,
 				notice.content,
 				notice.createdAt,
-				JPAExpressions.select(notice.viewUsers.size())
-					.from(notice)
-					.where(notice.id.eq(notice.id)),
-				null
+				notice.viewUsers.size().as("viewCount"),
+				notice.createdBy
 			))
 			.from(notice);
 	}

@@ -7,7 +7,7 @@ public record NoticeSearchResponse(
 	String title,
 	String content,
 	LocalDateTime createdAt,
-	Long viewCount,
-	String authorName
+	Integer viewCount,
+	Long createdBy
 ) {
 }
