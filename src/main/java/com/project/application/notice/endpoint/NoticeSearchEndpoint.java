@@ -1,5 +1,6 @@
 package com.project.application.notice.endpoint;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +19,7 @@ class NoticeSearchEndpoint {
 
 	@Operation(summary = "공지사항 목록 조회")
 	@GetMapping("/api/notices")
-	ResponseEntity<?> searchNotice() {
-		return ResponseEntity.ok(noticeSearcher.read());
+	ResponseEntity<?> searchNotice(Pageable pageable) {
+		return ResponseEntity.ok(noticeSearcher.read(pageable));
 	}
 }
