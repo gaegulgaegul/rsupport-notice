@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_notice_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Getter
 public class NoticeFileEntity {
 
@@ -31,5 +33,9 @@ public class NoticeFileEntity {
 
 	@Column(name = "file_name", nullable = false, length = 100)
 	private String fileName;
+
+	public void link(Long noticeId) {
+		this.noticeId = noticeId;
+	}
 
 }

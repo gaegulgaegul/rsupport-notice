@@ -1,8 +1,10 @@
 package com.project.application.notice.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.util.ObjectUtils;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -17,6 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +27,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_notice")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Getter
 public class NoticeEntity {
 
@@ -38,22 +42,30 @@ public class NoticeEntity {
 	@Column(name = "content", nullable = false, length = 2000)
 	private String content;
 
-	@Column(name = "start_date", nullable = false)
-	private LocalDate startDate;
+	@Column(name = "start_date_time", nullable = false)
+	private LocalDateTime startDateTime;
 
-	@Column(name = "end_date", nullable = false)
-	private LocalDate endDate;
+	@Column(name = "end_date_time", nullable = false)
+	private LocalDateTime endDateTime;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "id", referencedColumnName = "notice_id")
+	@JoinColumn(name = "notice_id", referencedColumnName = "id")
 	private List<NoticeFileEntity> files = new ArrayList<>();
 
 	@ElementCollection
 	@CollectionTable(
 		name = "tb_notice_view",
 		joinColumns = {
-			@JoinColumn(name = "id", referencedColumnName = "notice_id")
+			@JoinColumn(name = "notice_id", referencedColumnName = "id")
 		}
 	)
 	private List<String> viewUsers = new ArrayList<>();
+
+	public void link() {
+		if (ObjectUtils.isEmpty(this.files)) {
+			return;
+		}
+
+		this.files.forEach(item -> item.link(this.id));
+	}
 }
