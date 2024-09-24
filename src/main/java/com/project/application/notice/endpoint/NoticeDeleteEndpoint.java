@@ -21,6 +21,6 @@ class NoticeDeleteEndpoint {
 	@DeleteMapping("/api/notices/{noticeId}")
 	ResponseEntity<Void> deleteNotice(@PathVariable Long noticeId) {
 		noticeDeleter.delete(noticeId);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 }

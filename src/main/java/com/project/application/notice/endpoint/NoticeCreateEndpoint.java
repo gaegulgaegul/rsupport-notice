@@ -1,11 +1,14 @@
 package com.project.application.notice.endpoint;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.application.notice.dto.request.NoticeCreateRequest;
+import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.application.notice.service.NoticeCreator;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +24,8 @@ class NoticeCreateEndpoint {
 
 	@Operation(summary = "공지사항 생성")
 	@PostMapping("/api/notices")
-	ResponseEntity<?> createNotice(@RequestBody @Valid NoticeCreateRequest request) {
-		return ResponseEntity.ok(noticeCreator.create(request));
+	ResponseEntity<Void> createNotice(@RequestBody @Valid NoticeCreateRequest request) {
+		NoticeCreateResponse response = noticeCreator.create(request);
+		return ResponseEntity.created(URI.create("/api/notices" + response.noticeId())).build();
 	}
 }
