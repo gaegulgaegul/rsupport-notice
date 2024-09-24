@@ -1,4 +1,4 @@
-package com.project.core.support;
+package com.project.core.support.jpa;
 
 import java.time.LocalDateTime;
 

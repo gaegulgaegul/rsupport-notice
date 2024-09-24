@@ -1,4 +1,4 @@
-package com.project.application.file.endpoint;
+package com.project.application.file.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;

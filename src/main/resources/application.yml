@@ -9,3 +9,7 @@ spring:
   h2:
     console:
       enabled: true
+
+app:
+  upload:
+    file-path: src/main/resources/images

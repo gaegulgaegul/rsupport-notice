@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.util.ObjectUtils;
 
-import com.project.core.support.OperatorEntity;
+import com.project.core.support.jpa.OperatorEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
