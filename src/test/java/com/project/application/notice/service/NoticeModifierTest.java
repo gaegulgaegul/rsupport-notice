@@ -13,33 +13,29 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.notice.domain.NoticeEntity;
+import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.application.notice.dto.request.NoticeFileRequest;
-import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.request.NoticeModifyRequest;
-import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.core.exception.ApplicationException;
 
 @DisplayName("공지사항 수정 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DataJpaTest
+@SpringBootTest
+@Transactional
 class NoticeModifierTest {
 
-	@Autowired
-	private NoticeRepository noticeRepository;
-	private NoticeCreator noticeCreator;
+	@Autowired private NoticeRepository noticeRepository;
 
-	private NoticeModifier sut;
+	@Autowired private NoticeModifier sut;
 
 	@BeforeEach
 	void setUp() {
 		noticeRepository.deleteAll();
-
-		this.noticeCreator = new NoticeCreator(noticeRepository);
-		this.sut = new NoticeModifier(noticeRepository);
 	}
 
 	@Test
@@ -62,8 +58,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일있고_수정_파일없이_수정_할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			new NoticeFileRequest(1L, "첫번째 파일.jpg"),
-			new NoticeFileRequest(2L, "두번째 파일.jpg")
+			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -82,8 +78,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일에_다른_파일을_더_추가할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			new NoticeFileRequest(1L, "첫번째 파일.jpg"),
-			new NoticeFileRequest(2L, "두번째 파일.jpg")
+			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -105,12 +101,10 @@ class NoticeModifierTest {
 
 	@Test
 	void 공지기간_중_시작일이_종료일보다_후일이면_예외발생() {
-		List<NoticeFileRequest> files = List.of(
-			new NoticeFileRequest(1L, "첫번째 파일.jpg"),
-			new NoticeFileRequest(2L, "두번째 파일.jpg")
-		);
-
-		Long noticeId = createNotice(files);
+		Long noticeId = createNotice(List.of(
+			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build()
+		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
 			"공지사항수정테스트",
@@ -134,16 +128,16 @@ class NoticeModifierTest {
 		});
 	}
 
-	private Long createNotice(List<NoticeFileRequest> files) {
-		NoticeCreateRequest request = new NoticeCreateRequest(
-			"공지사항등록테스트",
-			"공지사항등록테스트",
-			LocalDateTime.of(2024, 9, 1, 0, 0, 0),
-			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
-			files
-		);
-		NoticeCreateResponse response = noticeCreator.create(request);
-		return response.noticeId();
+	private Long createNotice(List<NoticeFileEntity> files) {
+		NoticeEntity notice = NoticeEntity.builder()
+			.title("공지사항등록테스트")
+			.content("공지사항등록테스트")
+			.from(LocalDateTime.of(2024, 9, 1, 0, 0, 0))
+			.to(LocalDateTime.of(2024, 9, 30, 0, 0, 0))
+			.files(files)
+			.build();
+		noticeRepository.save(notice);
+		return notice.getId();
 	}
 
 }

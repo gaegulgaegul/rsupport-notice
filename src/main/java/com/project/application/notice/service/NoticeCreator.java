@@ -9,8 +9,8 @@ import org.springframework.util.ObjectUtils;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
+import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.application.notice.error.NoticeErrorCode;
 import com.project.core.exception.ApplicationException;
@@ -48,11 +48,11 @@ public class NoticeCreator {
 			.build();
 	}
 
-	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> dtoList) {
-		if (ObjectUtils.isEmpty(dtoList)) {
+	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> requests) {
+		if (ObjectUtils.isEmpty(requests)) {
 			return List.of();
 		}
-		return dtoList.stream()
+		return requests.stream()
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())

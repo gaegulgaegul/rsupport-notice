@@ -13,6 +13,9 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
@@ -23,16 +26,17 @@ import com.project.core.exception.ApplicationException;
 
 @DisplayName("공지사항 등록 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DataJpaTest
+@SpringBootTest
+@Transactional
 class NoticeCreatorTest {
 
 	@Autowired private NoticeRepository noticeRepository;
 
-	private NoticeCreator sut;
+	@Autowired private NoticeCreator sut;
 
 	@BeforeEach
 	void setUp() {
-		this.sut = new NoticeCreator(noticeRepository);
+		noticeRepository.deleteAll();
 	}
 
 	@Test

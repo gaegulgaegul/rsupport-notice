@@ -6,51 +6,43 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import com.project.application.notice.domain.NoticeEntity;
+import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.request.NoticeFileRequest;
-import com.project.application.notice.dto.request.NoticeCreateRequest;
-import com.project.application.notice.dto.response.NoticeCreateResponse;
 
-@DisplayName("공지사항 등록 테스트")
+@DisplayName("공지사항 삭제 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@DataJpaTest
+@SpringBootTest
 class NoticeDeleterTest {
 
 	@Autowired
 	private NoticeRepository noticeRepository;
 
-	private NoticeCreator noticeCreator;
+	@Autowired
 	private NoticeDeleter sut;
-
-	@BeforeEach
-	void setUp() {
-		this.noticeCreator = new NoticeCreator(noticeRepository);
-		this.sut = new NoticeDeleter(noticeRepository);
-	}
 
 	@Test
 	void 공지사항은_ID에_해당하는_정보를_삭제할_수_있다() {
-		NoticeCreateRequest request = new NoticeCreateRequest(
-			"공지사항등록테스트",
-			"공지사항등록테스트",
-			LocalDateTime.of(2024, 9, 1, 0, 0, 0),
-			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
-			List.of(
-				new NoticeFileRequest(1L, "첫번째 파일.jpg"),
-				new NoticeFileRequest(2L, "두번째 파일.jpg"),
-				new NoticeFileRequest(3L, "세번째 파일.jpg")
-			)
-		);
-		NoticeCreateResponse response = noticeCreator.create(request);
-		Long noticeId = response.noticeId();
+		NoticeEntity notice = NoticeEntity.builder()
+			.title("공지사항삭제테스트")
+			.content("공지사항삭제테스트")
+			.from(LocalDateTime.of(2024, 9, 1, 0, 0, 0))
+			.to(LocalDateTime.of(2024, 9, 30, 0, 0, 0))
+			.files(List.of(
+				NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
+				NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build(),
+				NoticeFileEntity.builder().fileId(3L).fileName("세번째 파일.jpg").build()
+			))
+			.build();
+		noticeRepository.save(notice);
+		Long noticeId = notice.getId();
 
 		sut.delete(noticeId);
 

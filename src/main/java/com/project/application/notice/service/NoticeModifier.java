@@ -47,11 +47,11 @@ public class NoticeModifier {
 			.files(toNoticeFiles(request.files()));
 	}
 
-	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> dtoList) {
-		if (ObjectUtils.isEmpty(dtoList)) {
+	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> requests) {
+		if (ObjectUtils.isEmpty(requests)) {
 			return List.of();
 		}
-		return dtoList.stream()
+		return requests.stream()
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())
