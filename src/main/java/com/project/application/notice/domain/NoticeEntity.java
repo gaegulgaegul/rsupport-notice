@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.util.ObjectUtils;
 
+import com.project.core.support.OperatorEntity;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -29,7 +31,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class NoticeEntity {
+public class NoticeEntity extends OperatorEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
