@@ -23,17 +23,22 @@ public class FileDownloader {
 	public FileDownloadResponse download(Long fileId) {
 		AttachFileEntity attachFile = attachFileRepository.findById(fileId)
 			.orElseThrow(() -> new ApplicationException(AttachFileErrorCode.NO_CONTENT));
-
 		LoadFile loadFile = fileManager.load(attachFile.getDirPath(), attachFile.getPhysicalFilename(), attachFile.getExtension());
+		return toResponse(attachFile.getOriginalFilename(), loadFile);
+	}
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(attachFile.getOriginalFilename()));
-		headers.add(HttpHeaders.TRANSFER_ENCODING, "binary");
-
+	private FileDownloadResponse toResponse(String originalFilename, LoadFile loadFile) {
 		return FileDownloadResponse.builder()
 			.contentType(MediaType.parseMediaType(loadFile.getContentType()))
-			.headers(headers)
+			.headers(toHeaders(originalFilename))
 			.resource(loadFile.getResource())
 			.build();
+	}
+
+	private HttpHeaders toHeaders(String originalFilename) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"%s\"".formatted(originalFilename));
+		headers.add(HttpHeaders.TRANSFER_ENCODING, "binary");
+		return headers;
 	}
 }
