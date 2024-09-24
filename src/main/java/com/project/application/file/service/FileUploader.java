@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.project.application.file.domain.AttachFileEntity;
 import com.project.application.file.domain.AttachFileRepository;
-import com.project.application.file.dto.FileUploadRequest;
-import com.project.application.file.dto.FileUploadResponse;
+import com.project.application.file.dto.request.FileUploadRequest;
+import com.project.application.file.dto.response.FileUploadResponse;
 import com.project.core.file.Attachment;
 import com.project.core.file.FileManager;
 

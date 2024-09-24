@@ -1,4 +1,4 @@
-package com.project.application.file.dto;
+package com.project.application.file.dto.request;
 
 import java.util.List;
 
