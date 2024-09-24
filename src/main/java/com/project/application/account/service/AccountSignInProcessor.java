@@ -8,7 +8,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.project.application.account.domain.AccountEntity;
 import com.project.application.account.domain.AccountRepository;
 import com.project.application.account.dto.SignInRequest;
-import com.project.application.account.error.AccountErrorCode;
+import com.project.application.account.error.SignErrorCode;
+import com.project.application.account.vo.Account;
 import com.project.core.exception.ApplicationException;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,22 +30,28 @@ public class AccountSignInProcessor {
 		String plainPassword = request.password();
 
 		AccountEntity account = accountRepository.findByEmail(plainEmail)
-			.orElseThrow(() -> new ApplicationException(AccountErrorCode.NO_SIGN_IN));
+			.orElseThrow(() -> new ApplicationException(SignErrorCode.INVALID));
 
 		if (!passwordEncoder.matches(plainPassword, account.getPassword())) {
-			throw new ApplicationException(AccountErrorCode.NO_SIGN_IN);
+			throw new ApplicationException(SignErrorCode.INVALID);
 		}
 
 		HttpSession session = getSession();
-		if (session.getAttribute("account") != null) {
+		if (session != null && session.getAttribute("account") != null) {
 			return;
 		}
-		session.setAttribute("account", account);
+
+		Account build = Account.builder()
+			.id(account.getId())
+			.email(account.getEmail())
+			.name(account.getName())
+			.build();
+		session.setAttribute("account", build);
 		session.setMaxInactiveInterval(3600);
 	}
 
 	private HttpSession getSession() {
 		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		return (attributes != null) ? attributes.getRequest().getSession(false) : null;
+		return (attributes != null) ? attributes.getRequest().getSession() : null;
 	}
 }

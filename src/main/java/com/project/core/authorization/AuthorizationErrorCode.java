@@ -1,4 +1,4 @@
-package com.project.application.account.error;
+package com.project.core.authorization;
 
 import org.springframework.http.HttpStatus;
 
@@ -9,8 +9,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum AccountErrorCode implements ErrorProvider {
-	NO_SIGN_IN(HttpStatus.NO_CONTENT, "A001", "이메일 또는 비밀번호가 잘못되었습니다.");
+public enum AuthorizationErrorCode implements ErrorProvider {
+	NO_SIGN_IN(HttpStatus.UNAUTHORIZED, "AZ001", "로그인이 필요합니다.");
 
 	private final HttpStatus status;
 	private final String code;

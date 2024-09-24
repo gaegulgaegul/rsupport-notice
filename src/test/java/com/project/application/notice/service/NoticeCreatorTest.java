@@ -12,9 +12,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.notice.domain.NoticeEntity;
@@ -48,7 +46,7 @@ class NoticeCreatorTest {
 			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
 			List.of()
 		);
-		NoticeCreateResponse result = sut.create(request);
+		NoticeCreateResponse result = sut.create(account, request);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -68,7 +66,7 @@ class NoticeCreatorTest {
 			)
 		);
 
-		NoticeCreateResponse result = sut.create(request);
+		NoticeCreateResponse result = sut.create(account, request);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -88,7 +86,7 @@ class NoticeCreatorTest {
 			)
 		);
 
-		NoticeCreateResponse result = sut.create(request);
+		NoticeCreateResponse result = sut.create(account, request);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -105,7 +103,7 @@ class NoticeCreatorTest {
 			List.of()
 		);
 
-		assertThatThrownBy(() -> sut.create(request))
+		assertThatThrownBy(() -> sut.create(account, request))
 			.isInstanceOf(ApplicationException.class);
 	}
 }
