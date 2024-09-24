@@ -16,7 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.NoticeFileDTO;
+import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.core.exception.ApplicationException;
@@ -59,8 +59,8 @@ class NoticeCreatorTest {
 			LocalDateTime.of(2024, 9, 1, 0, 0, 0),
 			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
 			List.of(
-				new NoticeFileDTO(1L, "첫번째 파일.jpg"),
-				new NoticeFileDTO(2L, "두번째 파일.jpg")
+				new NoticeFileRequest(1L, "첫번째 파일.jpg"),
+				new NoticeFileRequest(2L, "두번째 파일.jpg")
 			)
 		);
 
@@ -79,8 +79,8 @@ class NoticeCreatorTest {
 			LocalDateTime.of(2024, 9, 1, 0, 0, 0),
 			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
 			List.of(
-				new NoticeFileDTO(1L, "첫번째 파일.jpg"),
-				new NoticeFileDTO(1L, "첫번째 파일.jpg")
+				new NoticeFileRequest(1L, "첫번째 파일.jpg"),
+				new NoticeFileRequest(1L, "첫번째 파일.jpg")
 			)
 		);
 

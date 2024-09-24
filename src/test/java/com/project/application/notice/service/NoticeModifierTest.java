@@ -17,7 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.NoticeFileDTO;
+import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.request.NoticeModifyRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
@@ -62,8 +62,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일있고_수정_파일없이_수정_할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			new NoticeFileDTO(1L, "첫번째 파일.jpg"),
-			new NoticeFileDTO(2L, "두번째 파일.jpg")
+			new NoticeFileRequest(1L, "첫번째 파일.jpg"),
+			new NoticeFileRequest(2L, "두번째 파일.jpg")
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -82,8 +82,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일에_다른_파일을_더_추가할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			new NoticeFileDTO(1L, "첫번째 파일.jpg"),
-			new NoticeFileDTO(2L, "두번째 파일.jpg")
+			new NoticeFileRequest(1L, "첫번째 파일.jpg"),
+			new NoticeFileRequest(2L, "두번째 파일.jpg")
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -92,9 +92,9 @@ class NoticeModifierTest {
 			LocalDateTime.of(2024, 10, 1, 0, 0, 0),
 			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
 			List.of(
-				new NoticeFileDTO(1L, "첫번째 파일.jpg"),
-				new NoticeFileDTO(2L, "두번째 파일.jpg"),
-				new NoticeFileDTO(3L, "세번째 파일.jpg")
+				new NoticeFileRequest(1L, "첫번째 파일.jpg"),
+				new NoticeFileRequest(2L, "두번째 파일.jpg"),
+				new NoticeFileRequest(3L, "세번째 파일.jpg")
 			)
 		);
 		sut.modify(noticeId, request);
@@ -105,9 +105,9 @@ class NoticeModifierTest {
 
 	@Test
 	void 공지기간_중_시작일이_종료일보다_후일이면_예외발생() {
-		List<NoticeFileDTO> files = List.of(
-			new NoticeFileDTO(1L, "첫번째 파일.jpg"),
-			new NoticeFileDTO(2L, "두번째 파일.jpg")
+		List<NoticeFileRequest> files = List.of(
+			new NoticeFileRequest(1L, "첫번째 파일.jpg"),
+			new NoticeFileRequest(2L, "두번째 파일.jpg")
 		);
 
 		Long noticeId = createNotice(files);
@@ -134,7 +134,7 @@ class NoticeModifierTest {
 		});
 	}
 
-	private Long createNotice(List<NoticeFileDTO> files) {
+	private Long createNotice(List<NoticeFileRequest> files) {
 		NoticeCreateRequest request = new NoticeCreateRequest(
 			"공지사항등록테스트",
 			"공지사항등록테스트",

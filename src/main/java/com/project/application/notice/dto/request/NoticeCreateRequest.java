@@ -3,8 +3,6 @@ package com.project.application.notice.dto.request;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.project.application.notice.dto.NoticeFileDTO;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,7 +23,7 @@ public record NoticeCreateRequest(
 	LocalDateTime to,
 	@Valid
 	@Schema(description = "첨부 파일 목록")
-	List<NoticeFileDTO> files
+	List<NoticeFileRequest> files
 ) {
 
 }
