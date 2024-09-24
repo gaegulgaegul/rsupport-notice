@@ -2,12 +2,16 @@ package com.project.application.file.endpoint;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.application.file.dto.FileUploadRequest;
+import com.project.application.file.dto.FileUploadResponse;
 import com.project.application.file.service.FileUploader;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,8 +25,8 @@ class FileUploadEndpoint {
 	private final FileUploader fileUploader;
 
 	@Operation(summary = "파일 업로드")
-	@PostMapping("/api/files")
-	ResponseEntity<?> uploadFiles(@RequestParam List<MultipartFile> files) {
-		return ResponseEntity.ok(fileUploader.upload(files));
+	@PostMapping(value = "/api/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	ResponseEntity<List<FileUploadResponse>> uploadFiles(@ModelAttribute FileUploadRequest request) {
+		return ResponseEntity.ok(fileUploader.upload(request));
 	}
 }

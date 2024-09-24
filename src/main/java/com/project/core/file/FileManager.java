@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.core.exception.ApplicationException;
@@ -22,6 +23,18 @@ public class FileManager {
 
 	@Value("${app.upload.file-path}")
 	private String mediaFilePath;
+
+	@Value("${app.upload.extensions}")
+	private List<String> allowedExtensions;
+
+	public void validate(List<MultipartFile> files) {
+		if (ObjectUtils.isEmpty(files)) {
+			throw new ApplicationException(FileErrorCode.NOT_ATTACH);
+		}
+		if (files.stream().anyMatch(item -> !allowedExtensions.contains(item.getOriginalFilename().split("\\.")[1]))) {
+			throw new ApplicationException(FileErrorCode.NOT_EXTENSION);
+		}
+	}
 
 	public List<Attachment> store(List<MultipartFile> files) {
 		List<Attachment> attachFiles = new ArrayList<>();
@@ -42,7 +55,7 @@ public class FileManager {
 				attachFiles.add(toUploadFile(file, dirPath, physicalFilename, extension, attr));
 			}
 		} catch (IOException e) {
-			throw new ApplicationException(FileErrorCode.NOT_UPLOAD_FILE);
+			throw new ApplicationException(FileErrorCode.NOT_UPLOADED_FILE);
 		}
 		return attachFiles;
 	}

@@ -13,3 +13,4 @@ spring:
 app:
   upload:
     file-path: src/main/resources/images
+    extensions: pdf, doc, docx, xls, xlsx, ppt, pptx, jpg, jpeg, png, gif, bmp, zip, rar, txt, csv
