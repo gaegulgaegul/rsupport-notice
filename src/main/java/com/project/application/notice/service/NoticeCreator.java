@@ -32,8 +32,8 @@ public class NoticeCreator {
 		return new NoticeCreateResponse(notice.getId());
 	}
 
-	private void validateNoticeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-		if (startDateTime.isAfter(endDateTime)) {
+	private void validateNoticeDuration(LocalDateTime from, LocalDateTime to) {
+		if (from.isAfter(to)) {
 			throw new ApplicationException(NoticeErrorCode.DURATION);
 		}
 	}
