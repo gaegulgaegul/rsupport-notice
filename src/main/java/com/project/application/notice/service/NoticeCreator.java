@@ -52,10 +52,12 @@ public class NoticeCreator {
 
 	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileDTO> dtoList) {
 		return dtoList.stream()
+			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())
 				.fileName(item.fileName())
 				.build())
+			.distinct()
 			.toList();
 	}
 

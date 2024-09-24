@@ -23,7 +23,9 @@ public record NoticeCreateRequest(
 	@NotNull
 	@Schema(description = "공지 종료일시", example = "2024-12-31 00:00:00")
 	LocalDateTime to,
-	@Valid List<NoticeFileDTO> files
+	@Valid
+	@Schema(description = "첨부 파일 목록")
+	List<NoticeFileDTO> files
 ) {
 
 }
