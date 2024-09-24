@@ -39,18 +39,19 @@ public class NoticeCreator {
 	}
 
 	private NoticeEntity toNotice(NoticeCreateRequest request) {
-		NoticeEntity.NoticeEntityBuilder builder = NoticeEntity.builder()
+		return NoticeEntity.builder()
 			.title(request.title())
 			.content(request.content())
 			.from(request.from())
-			.to(request.to());
-		if (!ObjectUtils.isEmpty(request.files())) {
-			builder.files(toNoticeFiles(request.files()));
-		}
-		return builder.build();
+			.to(request.to())
+			.files(toNoticeFiles(request.files()))
+			.build();
 	}
 
 	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileDTO> dtoList) {
+		if (ObjectUtils.isEmpty(dtoList)) {
+			return List.of();
+		}
 		return dtoList.stream()
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()

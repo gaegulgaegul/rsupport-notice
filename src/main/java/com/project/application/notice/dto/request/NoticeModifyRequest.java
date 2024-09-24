@@ -10,15 +10,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public record NoticeCreateRequest(
+public record NoticeModifyRequest(
 	@NotEmpty
-	@Schema(description = "제목", example = "2024년 하반기 공지사항")
+	@Schema(description = "제목", example = "2024년 하반기 재공지")
 	String title,
 	@NotEmpty
-	@Schema(description = "내용", example = "출퇴근 기록 준수")
+	@Schema(description = "내용", example = "보안 준수")
 	String content,
 	@NotNull
-	@Schema(description = "공지 시작일시", example = "2024-07-01T00:00:00")
+	@Schema(description = "공지 시작일시", example = "2024-09-01T00:00:00")
 	LocalDateTime from,
 	@NotNull
 	@Schema(description = "공지 종료일시", example = "2024-12-31T00:00:00")

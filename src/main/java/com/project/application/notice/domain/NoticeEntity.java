@@ -70,4 +70,12 @@ public class NoticeEntity extends OperatorEntity {
 
 		this.files.forEach(item -> item.link(this.id));
 	}
+
+	public void modify(NoticeEntity.NoticeEntityBuilder builder) {
+		this.title = builder.title;
+		this.content = builder.content;
+		this.from = builder.from;
+		this.to = builder.to;
+		this.files = new ArrayList<>(builder.files$value);
+	}
 }
