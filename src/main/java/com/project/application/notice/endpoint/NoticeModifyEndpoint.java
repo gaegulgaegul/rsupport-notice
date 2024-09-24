@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.application.notice.service.NoticeModifier;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,6 @@ class NoticeModifyEndpoint {
 	@Operation(summary = "공지사항 수정")
 	@PutMapping("/api/notices/{noticeId}")
 	ResponseEntity<?> modifyNotice(@PathVariable Long noticeId) {
-		return ResponseEntity.ok(noticeModifier.modify());
+		return ResponseEntity.ok(noticeModifier.modify(noticeId));
 	}
 }

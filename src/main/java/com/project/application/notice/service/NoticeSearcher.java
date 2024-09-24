@@ -1,4 +1,4 @@
-package com.project.application.notice.endpoint;
+package com.project.application.notice.service;
 
 import org.springframework.stereotype.Service;
 

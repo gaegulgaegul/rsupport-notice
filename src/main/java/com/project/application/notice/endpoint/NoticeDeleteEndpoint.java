@@ -3,8 +3,9 @@ package com.project.application.notice.endpoint;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.project.application.notice.service.NoticeDeleter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,6 @@ class NoticeDeleteEndpoint {
 	@Operation(summary = "공지사항 삭제")
 	@DeleteMapping("/api/notices/{noticeId}")
 	ResponseEntity<?> deleteNotice(@PathVariable Long noticeId) {
-		return ResponseEntity.ok(noticeDeleter.delete());
+		return ResponseEntity.ok(noticeDeleter.delete(noticeId));
 	}
 }

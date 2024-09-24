@@ -1,10 +1,10 @@
-package com.project.application.notice.endpoint;
+package com.project.application.notice.service;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class NoticeModifier {
-	public Object modify() {
+	public Object modify(Long noticeId) {
 		return null;
 	}
 }
