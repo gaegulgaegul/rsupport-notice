@@ -19,7 +19,8 @@ class NoticeDeleteEndpoint {
 
 	@Operation(summary = "공지사항 삭제")
 	@DeleteMapping("/api/notices/{noticeId}")
-	ResponseEntity<?> deleteNotice(@PathVariable Long noticeId) {
-		return ResponseEntity.ok(noticeDeleter.delete(noticeId));
+	ResponseEntity<Void> deleteNotice(@PathVariable Long noticeId) {
+		noticeDeleter.delete(noticeId);
+		return ResponseEntity.ok().build();
 	}
 }
