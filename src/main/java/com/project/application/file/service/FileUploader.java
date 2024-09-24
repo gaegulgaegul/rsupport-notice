@@ -20,8 +20,6 @@ public class FileUploader {
 	private final FileManager fileManager;
 
 	public List<FileUploadResponse> upload(FileUploadRequest request) {
-		fileManager.validate(request.files());
-
 		List<AttachFileEntity> attachFiles = toAttachFiles(fileManager.store(request.files()));
 		attachFileRepository.saveAll(attachFiles);
 		return toResponse(attachFiles);

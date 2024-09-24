@@ -30,16 +30,9 @@ public class FileManager {
 	@Value("${app.upload.extensions}")
 	private List<String> allowedExtensions;
 
-	public void validate(List<MultipartFile> files) {
-		if (ObjectUtils.isEmpty(files)) {
-			throw new ApplicationException(FileErrorCode.NOT_ATTACH);
-		}
-		if (files.stream().anyMatch(item -> !allowedExtensions.contains(item.getOriginalFilename().split("\\.")[1]))) {
-			throw new ApplicationException(FileErrorCode.NOT_EXTENSION);
-		}
-	}
-
 	public List<Attachment> store(List<MultipartFile> files) {
+		validate(files);
+
 		List<Attachment> attachFiles = new ArrayList<>();
 		String dirPath = "%s/%s".formatted(mediaFilePath, UUID.randomUUID().toString());
 		try {
@@ -61,6 +54,15 @@ public class FileManager {
 			throw new ApplicationException(FileErrorCode.NOT_UPLOADED_FILE);
 		}
 		return attachFiles;
+	}
+
+	private void validate(List<MultipartFile> files) {
+		if (ObjectUtils.isEmpty(files)) {
+			throw new ApplicationException(FileErrorCode.NOT_ATTACH);
+		}
+		if (files.stream().anyMatch(item -> !allowedExtensions.contains(item.getOriginalFilename().split("\\.")[1]))) {
+			throw new ApplicationException(FileErrorCode.NOT_EXTENSION);
+		}
 	}
 
 	private Attachment toUploadFile(MultipartFile file, String dirPath, String physicalFilename, String extension, BasicFileAttributes attr) {

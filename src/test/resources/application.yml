@@ -6,11 +6,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-  h2:
-    console:
-      enabled: true
 
 app:
   upload:
-    file-path: src/main/resources/images
+    file-path: src/test/resources/images
     extensions: pdf, doc, docx, xls, xlsx, ppt, pptx, jpg, jpeg, png, gif, bmp, zip, rar, txt, csv
