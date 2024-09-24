@@ -1,5 +1,6 @@
 package com.project.application.notice.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.application.notice.dto.NoticeFileDTO;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
+import com.project.application.notice.error.NoticeErrorCode;
+import com.project.core.exception.ApplicationException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,22 +23,27 @@ public class NoticeCreator {
 	private final NoticeRepository noticeRepository;
 
 	public NoticeCreateResponse create(NoticeCreateRequest request) {
-		if (request.startDateTime().isBefore(request.endDateTime())) {
-
-		}
-		NoticeEntity notice = toNotice(request);
+		validateNoticeDuration(request.from(), request.to());
 		// TODO 파일 ID 검증
+
+		NoticeEntity notice = toNotice(request);
 		notice.link();
 		noticeRepository.save(notice);
 		return new NoticeCreateResponse(notice.getId());
+	}
+
+	private void validateNoticeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+		if (startDateTime.isAfter(endDateTime)) {
+			throw new ApplicationException(NoticeErrorCode.DURATION);
+		}
 	}
 
 	private NoticeEntity toNotice(NoticeCreateRequest request) {
 		NoticeEntity.NoticeEntityBuilder builder = NoticeEntity.builder()
 			.title(request.title())
 			.content(request.content())
-			.startDateTime(request.startDateTime())
-			.endDateTime(request.endDateTime());
+			.from(request.from())
+			.to(request.to());
 		if (!ObjectUtils.isEmpty(request.files())) {
 			builder.files(toNoticeFiles(request.files()));
 		}

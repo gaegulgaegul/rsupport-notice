@@ -19,10 +19,10 @@ public record NoticeCreateRequest(
 	String content,
 	@NotNull
 	@Schema(description = "공지 시작일시", example = "2024-07-01 00:00:00")
-	LocalDateTime startDateTime,
+	LocalDateTime from,
 	@NotNull
 	@Schema(description = "공지 종료일시", example = "2024-12-31 00:00:00")
-	LocalDateTime endDateTime,
+	LocalDateTime to,
 	@Valid List<NoticeFileDTO> files
 ) {
 

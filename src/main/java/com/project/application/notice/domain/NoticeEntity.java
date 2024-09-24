@@ -42,22 +42,22 @@ public class NoticeEntity {
 	@Column(name = "content", nullable = false, length = 2000)
 	private String content;
 
-	@Column(name = "start_date_time", nullable = false)
-	private LocalDateTime startDateTime;
+	@Column(name = "from_date_time", nullable = false)
+	private LocalDateTime from;
 
-	@Column(name = "end_date_time", nullable = false)
-	private LocalDateTime endDateTime;
+	@Column(name = "to_date_time", nullable = false)
+	private LocalDateTime to;
 
+	@Builder.Default
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "notice_id", referencedColumnName = "id")
+	@JoinColumn(name = "notice_id")
 	private List<NoticeFileEntity> files = new ArrayList<>();
 
+	@Builder.Default
 	@ElementCollection
 	@CollectionTable(
 		name = "tb_notice_view",
-		joinColumns = {
-			@JoinColumn(name = "notice_id", referencedColumnName = "id")
-		}
+		joinColumns = @JoinColumn(name = "notice_id")
 	)
 	private List<String> viewUsers = new ArrayList<>();
 

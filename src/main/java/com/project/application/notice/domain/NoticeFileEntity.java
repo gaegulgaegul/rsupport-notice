@@ -25,7 +25,7 @@ public class NoticeFileEntity {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "notice_id", nullable = false)
+	@Column(name = "notice_id")
 	private Long noticeId;
 
 	@Column(name = "file_id", nullable = false)
