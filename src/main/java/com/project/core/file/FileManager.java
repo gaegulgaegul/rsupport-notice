@@ -9,9 +9,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,5 +75,22 @@ public class FileManager {
 			.lastModifiedFileDateTime(LocalDateTime.ofInstant(attr.lastModifiedTime().toInstant(), ZoneId.of("Asia/Seoul")))
 			.lastAccessFileDateTime(LocalDateTime.ofInstant(attr.lastAccessTime().toInstant(), ZoneId.of("Asia/Seoul")))
 			.build();
+	}
+
+	public LoadFile load(String dirPath, String physicalFilename, String extension) {
+		try {
+			Path file = Paths.get(dirPath).resolve("%s.%s".formatted(physicalFilename, extension)).normalize();
+			UrlResource resource = new UrlResource(file.toUri());
+			if (resource.exists() || resource.isReadable()) {
+				return new LoadFile(
+					resource,
+					Optional.ofNullable(Files.probeContentType(file)).orElse(MediaType.APPLICATION_OCTET_STREAM_VALUE)
+				);
+			} else {
+				throw new ApplicationException(FileErrorCode.NOT_ATTACH);
+			}
+		} catch (IOException e) {
+			throw new ApplicationException(FileErrorCode.NOT_ATTACH);
+		}
 	}
 }

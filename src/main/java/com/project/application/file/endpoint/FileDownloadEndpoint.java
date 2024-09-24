@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.application.file.dto.response.FileDownloadResponse;
 import com.project.application.file.service.FileDownloader;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,10 @@ class FileDownloadEndpoint {
 	@Operation(summary = "파일 다운로드")
 	@PostMapping("/api/files/{fileId}")
 	ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
-		return ResponseEntity.ok(fileDownloader.download(fileId));
+		FileDownloadResponse response = fileDownloader.download(fileId);
+		return ResponseEntity.ok()
+			.contentType(response.contentType())
+			.headers(response.headers())
+			.body(response.resource());
 	}
 }
