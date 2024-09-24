@@ -6,6 +6,10 @@ public class ApplicationException extends RuntimeException {
 	@Getter
 	private ErrorProvider throwable;
 
+	public ApplicationException() {
+		this.throwable = ErrorCode.BAD_REQUEST;
+	}
+
 	public ApplicationException(ErrorProvider throwable) {
 		this.throwable = throwable;
 	}

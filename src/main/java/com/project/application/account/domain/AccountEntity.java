@@ -1,5 +1,7 @@
 package com.project.application.account.domain;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,14 +20,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class AccountEntity {
+public class AccountEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "email", length = 100, nullable = false)
+	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
 
 	@Column(name = "password", length = 255, nullable = false)

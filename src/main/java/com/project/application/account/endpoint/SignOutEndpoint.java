@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.application.account.service.AccountSignOutProcessor;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ class SignOutEndpoint {
 
 	@Operation(summary = "로그아웃")
 	@PostMapping("/api/sign/out")
-	ResponseEntity<?> signOut() {
+	ResponseEntity<Void> signOut() {
 		accountSignOutProcessor.signOut();
 		return ResponseEntity.ok().build();
 	}
