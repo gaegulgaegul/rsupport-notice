@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum NoticeErrorCode implements ErrorProvider {
 	NO_CONTENT(HttpStatus.NO_CONTENT, "N001", "해당하는 정보가 없습니다."),
 	DURATION(HttpStatus.BAD_REQUEST, "N002", "공지 기간이 잘못 입력 되었습니다."),
-	ANOTHER_AUTHOR(HttpStatus.UNAUTHORIZED, "N003", "수정 또는 삭제 권한이 없습니다.");
+	ANOTHER_AUTHOR(HttpStatus.UNAUTHORIZED, "N003", "수정 또는 삭제 권한이 없습니다."),
+	INVALID_FILE(HttpStatus.BAD_REQUEST, "N004", "존재하지 않는 파일 정보가 포함되어 있습니다.");
 
 	private final HttpStatus status;
 	private final String code;

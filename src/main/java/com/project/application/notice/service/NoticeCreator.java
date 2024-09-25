@@ -1,15 +1,17 @@
 package com.project.application.notice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.project.application.file.usecase.GetAttachFiles;
+import com.project.application.file.vo.AttachFileInfo;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
-import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.application.notice.error.NoticeErrorCode;
 import com.project.core.exception.ApplicationException;
@@ -20,11 +22,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NoticeCreator {
 	private final NoticeRepository noticeRepository;
+	private final GetAttachFiles getAttachFiles;
 
 	public NoticeCreateResponse create(NoticeCreateRequest request) {
-		// TODO 파일 ID 검증
+		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
+		List<Long> dbFileIds = files.stream()
+			.map(AttachFileInfo::fileId)
+			.toList();
+		ArrayList<Long> newFileIds = new ArrayList<>(request.fileIds());
+		newFileIds.removeAll(dbFileIds);
+		if (!newFileIds.isEmpty()) {
+			throw new ApplicationException(NoticeErrorCode.INVALID_FILE);
+		}
 
-		NoticeEntity notice = toNotice(request);
+		NoticeEntity notice = toNotice(request, files);
 		if (notice.isInvalidDuration()) {
 			throw new ApplicationException(NoticeErrorCode.DURATION);
 		}
@@ -32,18 +43,18 @@ public class NoticeCreator {
 		return new NoticeCreateResponse(notice.getId());
 	}
 
-	private NoticeEntity toNotice(NoticeCreateRequest request) {
+	private NoticeEntity toNotice(NoticeCreateRequest request, List<AttachFileInfo> files) {
 		NoticeEntity notice = NoticeEntity.builder()
 			.title(request.title())
 			.content(request.content())
 			.from(request.from())
 			.to(request.to())
 			.build();
-		notice.linkFiles(toNoticeFiles(request.files()));
+		notice.linkFiles(toNoticeFiles(files));
 		return notice;
 	}
 
-	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> requests) {
+	private List<NoticeFileEntity> toNoticeFiles(List<AttachFileInfo> requests) {
 		if (ObjectUtils.isEmpty(requests)) {
 			return List.of();
 		}
@@ -51,7 +62,7 @@ public class NoticeCreator {
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())
-				.fileName(item.fileName())
+				.fileName(item.filename())
 				.build())
 			.distinct()
 			.toList();
