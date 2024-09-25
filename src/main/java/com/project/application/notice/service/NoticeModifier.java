@@ -1,5 +1,6 @@
 package com.project.application.notice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.cache.annotation.CachePut;
@@ -8,10 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.project.application.account.vo.Account;
+import com.project.application.file.usecase.GetAttachFiles;
+import com.project.application.file.vo.AttachFileInfo;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.request.NoticeModifyRequest;
 import com.project.application.notice.dto.response.NoticeFileResponse;
 import com.project.application.notice.dto.response.NoticeReadResponse;
@@ -25,10 +27,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NoticeModifier {
 	private final NoticeRepository noticeRepository;
+	private final GetAttachFiles getAttachFiles;
 
 	@Transactional
 	@CachePut(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public NoticeReadResponse modify(@NotNull Long noticeId, NoticeModifyRequest request, Account account) {
+		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
+		if (hasInvalidFiles(files, request.fileIds())) {
+			throw new ApplicationException(NoticeErrorCode.INVALID_FILE);
+		}
+
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
 
@@ -36,7 +44,7 @@ public class NoticeModifier {
 			throw new ApplicationException(NoticeErrorCode.ANOTHER_AUTHOR);
 		}
 
-		notice.modify(toNoticeBuilder(request));
+		notice.modify(toNoticeBuilder(request, files));
 
 		if (notice.isInvalidDuration()) {
 			throw new ApplicationException(NoticeErrorCode.DURATION);
@@ -46,16 +54,25 @@ public class NoticeModifier {
 		return toResponse(notice);
 	}
 
-	private NoticeEntity.NoticeEntityBuilder toNoticeBuilder(NoticeModifyRequest request) {
+	private boolean hasInvalidFiles(List<AttachFileInfo> files, List<Long> fileIds) {
+		List<Long> dbFileIds = files.stream()
+			.map(AttachFileInfo::fileId)
+			.toList();
+		ArrayList<Long> newFileIds = new ArrayList<>(fileIds);
+		newFileIds.removeAll(dbFileIds);
+		return !newFileIds.isEmpty();
+	}
+
+	private NoticeEntity.NoticeEntityBuilder toNoticeBuilder(NoticeModifyRequest request, List<AttachFileInfo> files) {
 		return NoticeEntity.builder()
 			.title(request.title())
 			.content(request.content())
 			.from(request.from())
 			.to(request.to())
-			.files(toNoticeFiles(request.files()));
+			.files(toNoticeFiles(files));
 	}
 
-	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> requests) {
+	private List<NoticeFileEntity> toNoticeFiles(List<AttachFileInfo> requests) {
 		if (ObjectUtils.isEmpty(requests)) {
 			return List.of();
 		}
@@ -63,7 +80,7 @@ public class NoticeModifier {
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())
-				.fileName(item.fileName())
+				.fileName(item.filename())
 				.build())
 			.distinct()
 			.toList();

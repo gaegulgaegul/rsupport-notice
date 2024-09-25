@@ -18,10 +18,11 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.account.vo.Account;
+import com.project.application.file.domain.AttachFileEntity;
+import com.project.application.file.domain.AttachFileRepository;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.request.NoticeModifyRequest;
 import com.project.core.exception.ApplicationException;
 
@@ -32,15 +33,26 @@ import com.project.core.exception.ApplicationException;
 class NoticeModifierTest {
 
 	@Autowired private NoticeRepository noticeRepository;
+	@Autowired private AttachFileRepository attachFileRepository;
 
 	@Autowired private NoticeModifier sut;
 
 	private final Account account = Account.DEFAULT;
 	private final Account anotherAccount = Account.builder().id(1L).build();
 
+	private AttachFileEntity file1;
+	private AttachFileEntity file2;
+	private AttachFileEntity file3;
+
 	@BeforeEach
 	void setUp() {
 		noticeRepository.deleteAll();
+		attachFileRepository.deleteAll();
+
+		file1 = attachFile("첫번째 파일.jpg");
+		file2 = attachFile("두번째 파일.jpg");
+		file3 = attachFile("세번째 파일.jpg");
+		attachFileRepository.saveAll(List.of(file1, file2, file3));
 	}
 
 	@Test
@@ -63,8 +75,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일있고_수정_파일없이_수정_할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
-			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build()
+			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -83,8 +95,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일에_다른_파일을_더_추가할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
-			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build()
+			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -92,11 +104,7 @@ class NoticeModifierTest {
 			"공지사항수정테스트",
 			LocalDateTime.of(2024, 10, 1, 0, 0, 0),
 			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
-			List.of(
-				new NoticeFileRequest(1L, "첫번째 파일.jpg"),
-				new NoticeFileRequest(2L, "두번째 파일.jpg"),
-				new NoticeFileRequest(3L, "세번째 파일.jpg")
-			)
+			List.of(file1.getId(), file2.getId(), file3.getId())
 		);
 		sut.modify(noticeId, request, account);
 		NoticeEntity notice = noticeRepository.findById(noticeId).get();
@@ -105,10 +113,29 @@ class NoticeModifierTest {
 	}
 
 	@Test
+	void 존재하지_않는_파일은_공지사항에_등록하면_예외발생() {
+		Long noticeId = createNotice(List.of(
+			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
+		));
+
+		NoticeModifyRequest request = new NoticeModifyRequest(
+			"공지사항수정테스트",
+			"공지사항수정테스트",
+			LocalDateTime.of(2024, 10, 1, 0, 0, 0),
+			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
+			List.of(99L)
+		);
+
+		assertThatThrownBy(() -> sut.modify(noticeId, request, account))
+			.isInstanceOf(ApplicationException.class);
+	}
+
+	@Test
 	void 공지기간_중_시작일이_종료일보다_후일이면_예외발생() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
-			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build()
+			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -173,6 +200,20 @@ class NoticeModifierTest {
 		notice.linkFiles(files);
 		noticeRepository.save(notice);
 		return notice.getId();
+	}
+
+	private AttachFileEntity attachFile(String filename) {
+		return AttachFileEntity.builder()
+			.originalFilename(filename)
+			.physicalFilename("test")
+			.contentType("test")
+			.extension("jpg")
+			.dirPath("test")
+			.fileSize(100L)
+			.createFileDateTime(LocalDateTime.now())
+			.lastModifiedFileDateTime(LocalDateTime.now())
+			.lastAccessFileDateTime(LocalDateTime.now())
+			.build();
 	}
 
 }
