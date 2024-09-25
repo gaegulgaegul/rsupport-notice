@@ -1,6 +1,5 @@
 package com.project.core.support.crypto;
 
-import java.security.SecureRandom;
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -51,17 +50,5 @@ public class Aes256Crypto {
 		} catch (Exception e) {
 			throw new ApplicationException(CryptoErrorCode.NOT_DECRYPT);
 		}
-	}
-
-	protected static String generateEncryptionKey() {
-		byte[] key = new byte[32];
-		new SecureRandom().nextBytes(key);
-		return Base64.getEncoder().encodeToString(key);
-	}
-
-	protected static String generateIVKey() {
-		byte[] iv = new byte[16];
-		new SecureRandom().nextBytes(iv);
-		return Base64.getEncoder().encodeToString(iv);
 	}
 }

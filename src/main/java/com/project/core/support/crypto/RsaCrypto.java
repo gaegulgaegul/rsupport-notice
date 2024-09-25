@@ -1,15 +1,11 @@
 package com.project.core.support.crypto;
 
 import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.HashMap;
 
 import javax.crypto.Cipher;
 
@@ -53,34 +49,7 @@ public class RsaCrypto {
 			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
 			return new String(decryptedBytes);
 		} catch (Exception e) {
-			throw new ApplicationException(CryptoErrorCode.NOT_DECRYPT);
+			return encryptedText;
 		}
-	}
-
-	/*
-	 * 공개키와 개인키 한 쌍 생성
-	 */
-	public static HashMap<String, String> createKeypairAsString() {
-		HashMap<String, String> stringKeypair = new HashMap<>();
-
-		try {
-			SecureRandom secureRandom = new SecureRandom();
-			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-			keyPairGenerator.initialize(2048, secureRandom);
-			KeyPair keyPair = keyPairGenerator.genKeyPair();
-
-			PublicKey publicKey = keyPair.getPublic();
-			PrivateKey privateKey = keyPair.getPrivate();
-
-			String stringPublicKey = Base64.getEncoder().encodeToString(publicKey.getEncoded());
-			String stringPrivateKey = Base64.getEncoder().encodeToString(privateKey.getEncoded());
-
-			stringKeypair.put("publicKey", stringPublicKey);
-			stringKeypair.put("privateKey", stringPrivateKey);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return stringKeypair;
 	}
 }

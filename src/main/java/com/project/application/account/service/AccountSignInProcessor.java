@@ -9,6 +9,7 @@ import com.project.application.account.dto.SignInRequest;
 import com.project.application.account.error.SignErrorCode;
 import com.project.application.account.vo.Account;
 import com.project.core.exception.ApplicationException;
+import com.project.core.support.crypto.RsaCrypto;
 import com.project.core.support.session.SessionManager;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,12 +23,11 @@ public class AccountSignInProcessor {
 	private final AccountRepository accountRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final SessionManager sessionManager;
+	private final RsaCrypto rsaCrypto;
 
 	public void signIn(SignInRequest request) {
-
-		// TODO 복호화
-		String plainEmail = request.email();
-		String plainPassword = request.password();
+		String plainEmail = rsaCrypto.decrypt(request.email());
+		String plainPassword = rsaCrypto.decrypt(request.password());
 
 		AccountEntity account = accountRepository.findByEmail(plainEmail)
 			.orElseThrow(() -> new ApplicationException(SignErrorCode.INVALID));
