@@ -1,5 +1,6 @@
 package com.project.core.support.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +9,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -94,5 +96,23 @@ public class FileManager {
 		} catch (IOException e) {
 			throw new ApplicationException(FileErrorCode.NOT_ATTACH);
 		}
+	}
+
+	public void remove(String dirPath, String physicalFilename, String extension) {
+		try {
+			Path filePath = Paths.get(dirPath).resolve("%s.%s".formatted(physicalFilename, extension)).normalize();
+			Files.deleteIfExists(filePath);
+
+			Path directoryPath = Paths.get(dirPath);
+			if (isEmptyDirectory(directoryPath)) {
+				Files.deleteIfExists(directoryPath);
+			}
+		} catch (IOException e) {
+			throw new ApplicationException(FileErrorCode.NOT_ATTACH);
+		}
+	}
+
+	private boolean isEmptyDirectory(Path directoryPath) throws IOException {
+		return Files.isDirectory(directoryPath) && (Files.list(directoryPath).count() == 0);
 	}
 }
