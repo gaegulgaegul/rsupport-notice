@@ -12,6 +12,7 @@ import com.project.application.notice.service.NoticeModifier;
 import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ class NoticeModifyEndpoint {
 	@Authorization
 	@Operation(summary = "공지사항 수정")
 	@PutMapping("/api/notices/{noticeId}")
-	ResponseEntity<Void> modifyNotice(Account account, @PathVariable Long noticeId, @RequestBody @Valid NoticeModifyRequest request) {
+	ResponseEntity<Void> modifyNotice(@Parameter(hidden = true) Account account, @PathVariable Long noticeId, @RequestBody @Valid NoticeModifyRequest request) {
 		noticeModifier.modify(noticeId, request, account);
 		return ResponseEntity.ok().build();
 	}

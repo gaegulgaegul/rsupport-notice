@@ -14,6 +14,7 @@ import com.project.application.notice.service.NoticeCreator;
 import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,8 @@ class NoticeCreateEndpoint {
 	@Authorization
 	@Operation(summary = "공지사항 생성")
 	@PostMapping("/api/notices")
-	ResponseEntity<Void> createNotice(Account account, @RequestBody @Valid NoticeCreateRequest request) {
+	ResponseEntity<Void> createNotice(@Parameter(hidden = true) Account account, @RequestBody @Valid NoticeCreateRequest request) {
 		NoticeCreateResponse response = noticeCreator.create(request, account);
-		return ResponseEntity.created(URI.create("/api/notices" + response.noticeId())).build();
+		return ResponseEntity.created(URI.create("/api/notices/" + response.noticeId())).build();
 	}
 }

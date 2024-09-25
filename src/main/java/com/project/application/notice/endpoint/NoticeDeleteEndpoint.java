@@ -10,6 +10,7 @@ import com.project.application.notice.service.NoticeDeleter;
 import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +23,7 @@ class NoticeDeleteEndpoint {
 	@Authorization
 	@Operation(summary = "공지사항 삭제")
 	@DeleteMapping("/api/notices/{noticeId}")
-	ResponseEntity<Void> deleteNotice(Account account, @PathVariable Long noticeId) {
+	ResponseEntity<Void> deleteNotice(@Parameter(hidden = true) Account account, @PathVariable Long noticeId) {
 		noticeDeleter.delete(noticeId, account);
 		return ResponseEntity.noContent().build();
 	}

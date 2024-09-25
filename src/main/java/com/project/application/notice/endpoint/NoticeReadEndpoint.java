@@ -11,6 +11,7 @@ import com.project.application.notice.service.NoticeReader;
 import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -18,13 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 class NoticeReadEndpoint {
-
 	private final NoticeReader noticeReader;
 
 	@Authorization
 	@Operation(summary = "공지사항 조회")
 	@GetMapping("/api/notices/{noticeId}")
-	ResponseEntity<NoticeReadResponse> readNotice(Account account, @PathVariable Long noticeId) {
+	ResponseEntity<NoticeReadResponse> readNotice(@Parameter(hidden = true) Account account, @PathVariable Long noticeId) {
 		return ResponseEntity.ok(noticeReader.read(noticeId, account));
 	}
 }
