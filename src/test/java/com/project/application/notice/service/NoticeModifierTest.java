@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.account.vo.Account;
@@ -43,6 +44,7 @@ class NoticeModifierTest {
 	private AttachFileEntity file1;
 	private AttachFileEntity file2;
 	private AttachFileEntity file3;
+	private AttachFileEntity anotherOwnerFile;
 
 	@BeforeEach
 	void setUp() {
@@ -52,7 +54,8 @@ class NoticeModifierTest {
 		file1 = attachFile("첫번째 파일.jpg");
 		file2 = attachFile("두번째 파일.jpg");
 		file3 = attachFile("세번째 파일.jpg");
-		attachFileRepository.saveAll(List.of(file1, file2, file3));
+		anotherOwnerFile = attachFile("다른 사용자가 만든 파일");
+		attachFileRepository.saveAll(List.of(file1, file2, file3, anotherOwnerFile));
 	}
 
 	@Test
@@ -178,6 +181,23 @@ class NoticeModifierTest {
 
 		assertThatThrownBy(() -> sut.modify(null, request, account))
 			.isInstanceOf(InvalidDataAccessApiUsageException.class);
+	}
+
+	@Test
+	void 다른_소유자_파일을_첨부하면_예외발생() {
+		ReflectionTestUtils.setField(anotherOwnerFile, "createdBy", 99L);
+		Long noticeId = createNotice(List.of());
+
+		NoticeModifyRequest request = new NoticeModifyRequest(
+			"공지사항수정테스트",
+			"공지사항수정테스트",
+			LocalDateTime.of(2024, 10, 1, 0, 0, 0),
+			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
+			List.of(anotherOwnerFile.getId())
+		);
+
+		assertThatThrownBy(() -> sut.modify(noticeId, request, anotherAccount))
+			.isInstanceOf(ApplicationException.class);
 	}
 
 	private void assertModifiedNotice(NoticeEntity notice, int expected) {

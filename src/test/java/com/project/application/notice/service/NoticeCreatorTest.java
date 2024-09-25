@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.account.vo.Account;
@@ -39,6 +40,7 @@ class NoticeCreatorTest {
 
 	private AttachFileEntity file1;
 	private AttachFileEntity file2;
+	private AttachFileEntity anotherOwnerFile;
 
 	@BeforeEach
 	void setUp() {
@@ -47,7 +49,8 @@ class NoticeCreatorTest {
 
 		file1 = attachFile("첫번째 파일.jpg");
 		file2 = attachFile("두번째 파일.jpg");
-		attachFileRepository.saveAll(List.of(file1, file2));
+		anotherOwnerFile = attachFile("다른 사용자가 만든 파일");
+		attachFileRepository.saveAll(List.of(file1, file2, anotherOwnerFile));
 	}
 
 	@Test
@@ -122,6 +125,22 @@ class NoticeCreatorTest {
 			LocalDateTime.of(2024, 9, 24, 0, 0, 0),
 			LocalDateTime.of(2024, 9, 23, 0, 0, 0),
 			List.of()
+		);
+
+		assertThatThrownBy(() -> sut.create(request, account))
+			.isInstanceOf(ApplicationException.class);
+	}
+
+	@Test
+	void 다른_소유자_파일을_첨부하면_예외발생() {
+		ReflectionTestUtils.setField(anotherOwnerFile, "createdBy", 99L);
+
+		NoticeCreateRequest request = new NoticeCreateRequest(
+			"공지사항등록테스트",
+			"공지사항등록테스트",
+			LocalDateTime.of(2024, 9, 1, 0, 0, 0),
+			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
+			List.of(anotherOwnerFile.getId())
 		);
 
 		assertThatThrownBy(() -> sut.create(request, account))
