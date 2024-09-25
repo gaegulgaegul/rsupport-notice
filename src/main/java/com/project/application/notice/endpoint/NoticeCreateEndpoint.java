@@ -24,11 +24,11 @@ import lombok.RequiredArgsConstructor;
 class NoticeCreateEndpoint {
 	private final NoticeCreator noticeCreator;
 
-	@Operation(summary = "공지사항 생성")
 	@Authorization
+	@Operation(summary = "공지사항 생성")
 	@PostMapping("/api/notices")
-	ResponseEntity<Void> createNotice(Account account, @RequestBody @Valid NoticeCreateRequest request) {
-		NoticeCreateResponse response = noticeCreator.create(account, request);
+	ResponseEntity<Void> createNotice(@RequestBody @Valid NoticeCreateRequest request) {
+		NoticeCreateResponse response = noticeCreator.create(request);
 		return ResponseEntity.created(URI.create("/api/notices" + response.noticeId())).build();
 	}
 }

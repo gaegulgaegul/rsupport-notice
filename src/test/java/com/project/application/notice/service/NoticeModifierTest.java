@@ -49,7 +49,7 @@ class NoticeModifierTest {
 			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
 			List.of()
 		);
-		sut.modify(noticeId, request);
+		sut.modify(noticeId, request, account);
 		NoticeEntity notice = noticeRepository.findById(noticeId).get();
 
 		assertModifiedNotice(notice, 0);
@@ -69,7 +69,7 @@ class NoticeModifierTest {
 			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
 			List.of()
 		);
-		sut.modify(noticeId, request);
+		sut.modify(noticeId, request, account);
 		NoticeEntity notice = noticeRepository.findById(noticeId).get();
 
 		assertModifiedNotice(notice, 0);
@@ -93,7 +93,7 @@ class NoticeModifierTest {
 				new NoticeFileRequest(3L, "세번째 파일.jpg")
 			)
 		);
-		sut.modify(noticeId, request);
+		sut.modify(noticeId, request, account);
 		NoticeEntity notice = noticeRepository.findById(noticeId).get();
 
 		assertModifiedNotice(notice, 3);
@@ -114,7 +114,7 @@ class NoticeModifierTest {
 			List.of()
 		);
 
-		assertThatThrownBy(() -> sut.modify(noticeId, request))
+		assertThatThrownBy(() -> sut.modify(noticeId, request, account))
 			.isInstanceOf(ApplicationException.class);
 	}
 

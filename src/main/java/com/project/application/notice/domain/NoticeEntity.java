@@ -78,4 +78,8 @@ public class NoticeEntity extends OperatorEntity {
 		this.to = builder.to;
 		this.files = new ArrayList<>(builder.files$value);
 	}
+
+	public boolean isNotAuthor(Long accountId) {
+		return !this.getCreatedBy().equals(accountId);
+	}
 }

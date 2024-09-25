@@ -2,8 +2,6 @@ package com.project.application.account.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.project.application.account.domain.AccountEntity;
 import com.project.application.account.domain.AccountRepository;
@@ -11,6 +9,7 @@ import com.project.application.account.dto.SignInRequest;
 import com.project.application.account.error.SignErrorCode;
 import com.project.application.account.vo.Account;
 import com.project.core.exception.ApplicationException;
+import com.project.core.support.session.SessionManager;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AccountSignInProcessor {
 	private final AccountRepository accountRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final SessionManager sessionManager;
 
 	public void signIn(SignInRequest request) {
 
@@ -36,7 +36,8 @@ public class AccountSignInProcessor {
 			throw new ApplicationException(SignErrorCode.INVALID);
 		}
 
-		HttpSession session = getSession();
+		HttpSession session = sessionManager.sessionOrDefault()
+			.orElseThrow(() -> new ApplicationException(SignErrorCode.NO_SESSION));
 		if (session != null && session.getAttribute("account") != null) {
 			return;
 		}
@@ -48,10 +49,5 @@ public class AccountSignInProcessor {
 			.build();
 		session.setAttribute("account", build);
 		session.setMaxInactiveInterval(3600);
-	}
-
-	private HttpSession getSession() {
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		return (attributes != null) ? attributes.getRequest().getSession() : null;
 	}
 }

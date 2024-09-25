@@ -8,8 +8,8 @@ import com.project.application.file.domain.AttachFileEntity;
 import com.project.application.file.domain.AttachFileRepository;
 import com.project.application.file.dto.request.FileUploadRequest;
 import com.project.application.file.dto.response.FileUploadResponse;
-import com.project.core.file.Attachment;
-import com.project.core.file.FileManager;
+import com.project.core.support.file.Attachment;
+import com.project.core.support.file.FileManager;
 
 import lombok.RequiredArgsConstructor;
 

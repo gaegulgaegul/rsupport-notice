@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
@@ -21,11 +22,16 @@ import lombok.RequiredArgsConstructor;
 public class NoticeModifier {
 	private final NoticeRepository noticeRepository;
 
-	public void modify(Long noticeId, NoticeModifyRequest request) {
+	public void modify(Long noticeId, NoticeModifyRequest request, Account account) {
 		validateNoticeDuration(request.from(), request.to());
 
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
+
+		if (notice.isNotAuthor(account.getId())) {
+			throw new ApplicationException(NoticeErrorCode.ANOTHER_AUTHOR);
+		}
+
 		notice.modify(toNoticeBuilder(request));
 		notice.link();
 

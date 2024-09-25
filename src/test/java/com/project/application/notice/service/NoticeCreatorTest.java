@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
-import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
+import com.project.application.notice.dto.request.NoticeFileRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.core.exception.ApplicationException;
 
@@ -46,7 +46,7 @@ class NoticeCreatorTest {
 			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
 			List.of()
 		);
-		NoticeCreateResponse result = sut.create(account, request);
+		NoticeCreateResponse result = sut.create(request);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -66,7 +66,7 @@ class NoticeCreatorTest {
 			)
 		);
 
-		NoticeCreateResponse result = sut.create(account, request);
+		NoticeCreateResponse result = sut.create(request);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -86,7 +86,7 @@ class NoticeCreatorTest {
 			)
 		);
 
-		NoticeCreateResponse result = sut.create(account, request);
+		NoticeCreateResponse result = sut.create(request);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -103,7 +103,7 @@ class NoticeCreatorTest {
 			List.of()
 		);
 
-		assertThatThrownBy(() -> sut.create(account, request))
+		assertThatThrownBy(() -> sut.create(request))
 			.isInstanceOf(ApplicationException.class);
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
@@ -23,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class NoticeCreator {
 	private final NoticeRepository noticeRepository;
 
-	public NoticeCreateResponse create(Account account, NoticeCreateRequest request) {
+	public NoticeCreateResponse create(NoticeCreateRequest request) {
 		validateNoticeDuration(request.from(), request.to());
 		// TODO 파일 ID 검증
 

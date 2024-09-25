@@ -1,4 +1,4 @@
-package com.project.core.file;
+package com.project.core.support.file;
 
 import org.springframework.core.io.Resource;
 

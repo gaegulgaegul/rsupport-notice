@@ -24,6 +24,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.core.exception.ApplicationException;
+import com.project.core.support.file.Attachment;
+import com.project.core.support.file.FileManager;
+import com.project.core.support.file.LoadFile;
 
 @DisplayName("파일 업/다운로드 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

@@ -9,8 +9,8 @@ import com.project.application.file.domain.AttachFileRepository;
 import com.project.application.file.dto.response.FileDownloadResponse;
 import com.project.application.file.error.AttachFileErrorCode;
 import com.project.core.exception.ApplicationException;
-import com.project.core.file.FileManager;
-import com.project.core.file.LoadFile;
+import com.project.core.support.file.FileManager;
+import com.project.core.support.file.LoadFile;
 
 import lombok.RequiredArgsConstructor;
 
