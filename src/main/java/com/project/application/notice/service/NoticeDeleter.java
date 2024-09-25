@@ -4,6 +4,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.project.application.account.vo.Account;
+import com.project.application.file.usecase.DeactivateAttachFiles;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.application.notice.error.NoticeErrorCode;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NoticeDeleter {
 	private final NoticeRepository noticeRepository;
+	private final DeactivateAttachFiles deactivateAttachFiles;
 
 	@CacheEvict(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public void delete(@NotNull Long noticeId, Account account) {
@@ -27,5 +29,6 @@ public class NoticeDeleter {
 		}
 
 		noticeRepository.deleteById(noticeId);
+		deactivateAttachFiles.deactivate(notice.getFileIds());
 	}
 }

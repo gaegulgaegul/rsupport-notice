@@ -130,4 +130,10 @@ public class NoticeEntity extends OperatorEntity {
 			.filter(fileId -> !newFileIds.contains(fileId))
 			.toList();
 	}
+
+	public List<Long> getFileIds() {
+		return this.files.stream()
+			.map(NoticeFileEntity::getFileId)
+			.toList();
+	}
 }
