@@ -2,6 +2,7 @@ package com.project.application.notice.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -16,13 +17,16 @@ import com.project.application.notice.error.NoticeErrorCode;
 import com.project.core.exception.ApplicationException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NoticeReader {
 	private final NoticeRepository noticeRepository;
 
 	@Transactional
+	@Cacheable(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public NoticeReadResponse read(Long noticeId, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));

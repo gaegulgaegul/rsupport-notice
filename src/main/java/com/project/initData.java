@@ -19,7 +19,7 @@ public class initData implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		String decryptedPassword = passwordEncoder.encode("1234");
-		for (int i = 1; i < 100; i++) {
+		for (int i = 1; i < 10; i++) {
 			AccountEntity account = AccountEntity.builder()
 				.email("user%d@gmail.com".formatted(i))
 				.password(decryptedPassword)

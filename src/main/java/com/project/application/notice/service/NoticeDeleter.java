@@ -1,5 +1,6 @@
 package com.project.application.notice.service;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import com.project.application.account.vo.Account;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class NoticeDeleter {
 	private final NoticeRepository noticeRepository;
 
+	@CacheEvict(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public void delete(@NotNull Long noticeId, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
