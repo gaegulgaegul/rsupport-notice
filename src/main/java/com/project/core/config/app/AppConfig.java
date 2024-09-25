@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.project.core.config.filter.CacheResponseFilter;
+import com.project.core.config.filter.RedisCacheResponseFilter;
 import com.project.core.support.crypto.Aes256Crypto;
 import com.project.core.support.crypto.RsaCrypto;
 
@@ -43,9 +43,9 @@ public class AppConfig {
 	}
 
 	@Bean
-	public FilterRegistrationBean<CacheResponseFilter> cacheResponseFilter() {
-		FilterRegistrationBean<CacheResponseFilter> registrationBean = new FilterRegistrationBean<>();
-		registrationBean.setFilter(new CacheResponseFilter());
+	public FilterRegistrationBean<RedisCacheResponseFilter> redisCacheResponseFilter() {
+		FilterRegistrationBean<RedisCacheResponseFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new RedisCacheResponseFilter());
 		registrationBean.addUrlPatterns("/*");
 		return registrationBean;
 	}
