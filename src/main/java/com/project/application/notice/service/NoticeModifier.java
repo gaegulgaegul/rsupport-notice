@@ -1,6 +1,5 @@
 package com.project.application.notice.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import com.project.application.notice.dto.request.NoticeModifyRequest;
 import com.project.application.notice.error.NoticeErrorCode;
 import com.project.core.exception.ApplicationException;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,9 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class NoticeModifier {
 	private final NoticeRepository noticeRepository;
 
+	@Transactional
 	public void modify(Long noticeId, NoticeModifyRequest request, Account account) {
-		validateNoticeDuration(request.from(), request.to());
-
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
 
@@ -33,15 +32,12 @@ public class NoticeModifier {
 		}
 
 		notice.modify(toNoticeBuilder(request));
-		notice.link();
 
-		noticeRepository.save(notice);
-	}
-
-	private void validateNoticeDuration(LocalDateTime from, LocalDateTime to) {
-		if (from.isAfter(to)) {
+		if (notice.isInvalidDuration()) {
 			throw new ApplicationException(NoticeErrorCode.DURATION);
 		}
+
+		noticeRepository.save(notice);
 	}
 
 	private NoticeEntity.NoticeEntityBuilder toNoticeBuilder(NoticeModifyRequest request) {

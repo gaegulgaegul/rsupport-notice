@@ -1,6 +1,5 @@
 package com.project.application.notice.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -23,29 +22,25 @@ public class NoticeCreator {
 	private final NoticeRepository noticeRepository;
 
 	public NoticeCreateResponse create(NoticeCreateRequest request) {
-		validateNoticeDuration(request.from(), request.to());
 		// TODO 파일 ID 검증
 
 		NoticeEntity notice = toNotice(request);
-		notice.link();
+		if (notice.isInvalidDuration()) {
+			throw new ApplicationException(NoticeErrorCode.DURATION);
+		}
 		noticeRepository.save(notice);
 		return new NoticeCreateResponse(notice.getId());
 	}
 
-	private void validateNoticeDuration(LocalDateTime from, LocalDateTime to) {
-		if (from.isAfter(to)) {
-			throw new ApplicationException(NoticeErrorCode.DURATION);
-		}
-	}
-
 	private NoticeEntity toNotice(NoticeCreateRequest request) {
-		return NoticeEntity.builder()
+		NoticeEntity notice = NoticeEntity.builder()
 			.title(request.title())
 			.content(request.content())
 			.from(request.from())
 			.to(request.to())
-			.files(toNoticeFiles(request.files()))
 			.build();
+		notice.linkFiles(toNoticeFiles(request.files()));
+		return notice;
 	}
 
 	private List<NoticeFileEntity> toNoticeFiles(List<NoticeFileRequest> requests) {

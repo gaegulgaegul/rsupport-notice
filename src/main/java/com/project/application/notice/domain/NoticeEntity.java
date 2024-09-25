@@ -63,11 +63,12 @@ public class NoticeEntity extends OperatorEntity {
 	)
 	private List<String> viewUsers = new ArrayList<>();
 
-	public void link() {
-		if (ObjectUtils.isEmpty(this.files)) {
+	public void linkFiles(List<NoticeFileEntity> files) {
+		if (ObjectUtils.isEmpty(files)) {
 			return;
 		}
 
+		this.files = new ArrayList<>(files);
 		this.files.forEach(item -> item.link(this.id));
 	}
 
@@ -76,7 +77,11 @@ public class NoticeEntity extends OperatorEntity {
 		this.content = builder.content;
 		this.from = builder.from;
 		this.to = builder.to;
-		this.files = new ArrayList<>(builder.files$value);
+		this.linkFiles(builder.files$value);
+	}
+
+	public boolean isInvalidDuration() {
+		return this.from.isAfter(this.to);
 	}
 
 	public boolean isNotAuthor(Long accountId) {
