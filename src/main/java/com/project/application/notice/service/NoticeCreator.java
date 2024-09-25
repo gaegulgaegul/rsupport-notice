@@ -43,6 +43,7 @@ public class NoticeCreator {
 		if (notice.isInvalidDuration()) {
 			throw new ApplicationException(NoticeErrorCode.DURATION);
 		}
+
 		noticeRepository.save(notice);
 		activeAttachFiles.active(request.fileIds());
 		return new NoticeCreateResponse(notice.getId());
