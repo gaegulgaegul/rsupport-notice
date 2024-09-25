@@ -64,7 +64,7 @@ class FileUsecase implements GetAttachFiles, ActiveAttachFiles, DeactivateAttach
 
 	@Override
 	public void clean(LocalDate now) {
-		List<AttachFileEntity> files = attachFileRepository.findAllActiveAndCreatedAtLessThen(false, now.atStartOfDay());
+		List<AttachFileEntity> files = attachFileRepository.findAllByActiveAndCreatedAtBefore(false, now.atStartOfDay());
 
 		List<AttachFileEntity> deleteFiles = new ArrayList<>();
 		for (AttachFileEntity file : files) {

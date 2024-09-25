@@ -2,6 +2,8 @@ package com.project.application.file.domain;
 
 import java.time.LocalDateTime;
 
+import com.project.core.support.jpa.OperatorEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class AttachFileEntity {
+public class AttachFileEntity extends OperatorEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

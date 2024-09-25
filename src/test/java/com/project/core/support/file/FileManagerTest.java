@@ -24,9 +24,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.core.exception.ApplicationException;
-import com.project.core.support.file.Attachment;
-import com.project.core.support.file.FileManager;
-import com.project.core.support.file.LoadFile;
 
 @DisplayName("파일 업/다운로드 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -101,5 +98,26 @@ class FileManagerTest {
 
 		assertThat(loadFile.getContentType()).isEqualTo(MediaType.TEXT_PLAIN_VALUE);
 		assertThat(loadFile.getResource()).isNotNull();
+	}
+
+	@Test
+	void 서버에_존재하는_파일을_삭제_할_수_있다() {
+		List<MultipartFile> files = List.of(
+			new MockMultipartFile(
+				"files",
+				"sample.txt",
+				MediaType.TEXT_PLAIN_VALUE,
+				"file upload except test".getBytes()
+			)
+		);
+		Attachment attachment = sut.store(files).get(0);
+
+		sut.remove(attachment.getDirPath(), attachment.getPhysicalFilename(), attachment.getExtension());
+
+		Path filePath = Paths.get(attachment.getDirPath())
+			.resolve("%s.%s".formatted(attachment.getPhysicalFilename(), attachment.getExtension())).normalize();
+		Path directoryPath = Paths.get(attachment.getDirPath());
+		assertThat(Files.notExists(filePath)).isTrue();
+		assertThat(Files.notExists(directoryPath)).isTrue();
 	}
 }
