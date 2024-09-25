@@ -16,13 +16,13 @@ public record NoticeModifyRequest(
 	@Schema(description = "내용", example = "보안 준수")
 	String content,
 	@NotNull
-	@Schema(description = "공지 시작일시", example = "2024-09-01T00:00:00")
+	@Schema(description = "공지 시작일시", example = "2024-09-01T00:00:00.000Z", type = "string", format = "date-time")
 	LocalDateTime from,
 	@NotNull
-	@Schema(description = "공지 종료일시", example = "2024-12-31T00:00:00")
+	@Schema(description = "공지 종료일시", example = "2024-12-31T00:00:00.000Z", type = "string", format = "date-time")
 	LocalDateTime to,
 	@Valid
-	@Schema(description = "첨부 파일 ID 목록")
+	@Schema(description = "첨부 파일 ID 목록", example = "[1, 2, 3]")
 	List<Long> fileIds
 ) {
 

@@ -16,13 +16,13 @@ public record NoticeCreateRequest(
 	@Schema(description = "내용", example = "출퇴근 기록 준수")
 	String content,
 	@NotNull
-	@Schema(description = "공지 시작일시", example = "2024-07-01T00:00:00")
+	@Schema(description = "공지 시작일시", example = "2024-07-01T00:00:00.000Z", type = "string", format = "date-time")
 	LocalDateTime from,
 	@NotNull
-	@Schema(description = "공지 종료일시", example = "2024-12-31T00:00:00")
+	@Schema(description = "공지 종료일시", example = "2024-12-31T00:00:00.000Z", type = "string", format = "date-time")
 	LocalDateTime to,
 	@Valid
-	@Schema(description = "첨부 파일 ID 목록")
+	@Schema(description = "첨부 파일 ID 목록", example = "[1]")
 	List<Long> fileIds
 ) {
 
