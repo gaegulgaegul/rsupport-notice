@@ -65,26 +65,6 @@ public class NoticeEntity extends OperatorEntity {
 	)
 	private List<Long> viewUsers = new ArrayList<>();
 
-	public void linkFiles(List<NoticeFileEntity> newFiles) {
-		if (ObjectUtils.isEmpty(this.files)) {
-			this.files = new ArrayList<>();
-			this.files.addAll(newFiles);
-			this.files.forEach(item -> item.link(this.id));
-			return;
-		}
-
-		Set<Long> newFileIds = newFiles.stream()
-			.map(NoticeFileEntity::getFileId)
-			.collect(Collectors.toSet());
-		this.files.removeIf(file -> !newFileIds.contains(file.getFileId()));
-		newFiles.forEach(newFile -> {
-			if (this.files.stream().noneMatch(file -> file.getFileId().equals(newFile.getFileId()))) {
-				newFile.link(this.id);
-				this.files.add(newFile);
-			}
-		});
-	}
-
 	public void modify(NoticeEntity.NoticeEntityBuilder builder) {
 		this.title = builder.title;
 		this.content = builder.content;
@@ -114,5 +94,32 @@ public class NoticeEntity extends OperatorEntity {
 
 	public Integer getViewCount() {
 		return ObjectUtils.isEmpty(viewUsers) ? 0 : this.viewUsers.size();
+	}
+
+	public void linkFiles(List<NoticeFileEntity> newFiles) {
+		if (ObjectUtils.isEmpty(this.files)) {
+			this.files = new ArrayList<>();
+			this.files.addAll(newFiles);
+			this.files.forEach(item -> item.link(this.id));
+			return;
+		}
+
+		mergeLinkFiles(newFiles);
+	}
+
+	private void mergeLinkFiles(List<NoticeFileEntity> newFiles) {
+		Set<Long> newFileIds = newFiles.stream()
+			.map(NoticeFileEntity::getFileId)
+			.collect(Collectors.toSet());
+		/* 삭제되는 정보 제외 */
+		this.files.removeIf(file -> !newFileIds.contains(file.getFileId()));
+
+		/* 신규 정보 추가 */
+		newFiles.forEach(newFile -> {
+			if (this.files.stream().noneMatch(file -> file.getFileId().equals(newFile.getFileId()))) {
+				newFile.link(this.id);
+				this.files.add(newFile);
+			}
+		});
 	}
 }
