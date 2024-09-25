@@ -1,6 +1,5 @@
 package com.project.core.support.file;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +8,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -100,10 +98,10 @@ public class FileManager {
 
 	public void remove(String dirPath, String physicalFilename, String extension) {
 		try {
-			Path filePath = Paths.get(dirPath).resolve("%s.%s".formatted(physicalFilename, extension)).normalize();
-			Files.deleteIfExists(filePath);
-
 			Path directoryPath = Paths.get(dirPath);
+			Path filePath = directoryPath.resolve("%s.%s".formatted(physicalFilename, extension)).normalize();
+
+			Files.deleteIfExists(filePath);
 			if (isEmptyDirectory(directoryPath)) {
 				Files.deleteIfExists(directoryPath);
 			}

@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.core.exception.ApplicationException;
 
-@DisplayName("파일 업/다운로드 기능 테스트")
+@DisplayName("파일 서버 관리 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest
 class FileManagerTest {
@@ -101,7 +101,7 @@ class FileManagerTest {
 	}
 
 	@Test
-	void 서버에_존재하는_파일을_삭제_할_수_있다() {
+	void 서버에_존재하는_파일과_디렉토리을_삭제_할_수_있다() {
 		List<MultipartFile> files = List.of(
 			new MockMultipartFile(
 				"files",
@@ -119,5 +119,31 @@ class FileManagerTest {
 		Path directoryPath = Paths.get(attachment.getDirPath());
 		assertThat(Files.notExists(filePath)).isTrue();
 		assertThat(Files.notExists(directoryPath)).isTrue();
+	}
+
+	@Test
+	void 서버에_존재하는_파일을_삭제_할_수_있다() {
+		List<MultipartFile> files = List.of(
+			new MockMultipartFile(
+				"files",
+				"sample1.txt",
+				MediaType.TEXT_PLAIN_VALUE,
+				"file upload except test1".getBytes()
+			),
+			new MockMultipartFile(
+				"files",
+				"sample2.txt",
+				MediaType.TEXT_PLAIN_VALUE,
+				"file upload except test2".getBytes()
+			)
+		);
+		Attachment attachment = sut.store(files).get(0);
+
+		sut.remove(attachment.getDirPath(), attachment.getPhysicalFilename(), attachment.getExtension());
+
+		Path directoryPath = Paths.get(attachment.getDirPath());
+		Path filePath = directoryPath.resolve("%s.%s".formatted(attachment.getPhysicalFilename(), attachment.getExtension())).normalize();
+		assertThat(Files.notExists(filePath)).isTrue();
+		assertThat(Files.notExists(directoryPath)).isFalse();
 	}
 }
