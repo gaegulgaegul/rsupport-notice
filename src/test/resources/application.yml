@@ -6,6 +6,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
   data:
     redis:
       host: localhost

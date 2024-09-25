@@ -53,4 +53,20 @@ public class AttachFileEntity {
 
 	@Column(name = "last_access_file_date_time", nullable = false)
 	private LocalDateTime lastAccessFileDateTime;
+
+	@Builder.Default
+	@Column(name = "active_flag")
+	private Boolean active = false;
+
+	public void active() {
+		this.active = true;
+	}
+
+	public boolean isActive() {
+		return this.active != null && this.active;
+	}
+
+	public boolean isNotActive() {
+		return !isActive();
+	}
 }

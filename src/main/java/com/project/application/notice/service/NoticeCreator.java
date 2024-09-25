@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.project.application.file.usecase.ActiveAttachFiles;
 import com.project.application.file.usecase.GetAttachFiles;
 import com.project.application.file.vo.AttachFileInfo;
 import com.project.application.notice.domain.NoticeEntity;
@@ -23,7 +25,9 @@ import lombok.RequiredArgsConstructor;
 public class NoticeCreator {
 	private final NoticeRepository noticeRepository;
 	private final GetAttachFiles getAttachFiles;
+	private final ActiveAttachFiles activeAttachFiles;
 
+	@Transactional
 	public NoticeCreateResponse create(NoticeCreateRequest request) {
 		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
 		if (hasInvalidFiles(files, request.fileIds())) {
@@ -35,6 +39,7 @@ public class NoticeCreator {
 			throw new ApplicationException(NoticeErrorCode.DURATION);
 		}
 		noticeRepository.save(notice);
+		activeAttachFiles.active(request.fileIds());
 		return new NoticeCreateResponse(notice.getId());
 	}
 
