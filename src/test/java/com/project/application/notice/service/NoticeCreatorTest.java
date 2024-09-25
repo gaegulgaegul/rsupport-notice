@@ -110,7 +110,7 @@ class NoticeCreatorTest {
 			"공지사항등록테스트",
 			LocalDateTime.of(2024, 9, 1, 0, 0, 0),
 			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
-			List.of(3L)
+			List.of(99L)
 		);
 
 		assertThatThrownBy(() -> sut.create(request, account))

@@ -2,6 +2,7 @@ package com.project.application.notice.service;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.account.vo.Account;
 import com.project.application.file.usecase.DeactivateAttachFiles;
@@ -19,6 +20,7 @@ public class NoticeDeleter {
 	private final NoticeRepository noticeRepository;
 	private final DeactivateAttachFiles deactivateAttachFiles;
 
+	@Transactional
 	@CacheEvict(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public void delete(@NotNull Long noticeId, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
@@ -28,7 +30,7 @@ public class NoticeDeleter {
 			throw new ApplicationException(NoticeErrorCode.ANOTHER_AUTHOR);
 		}
 
-		noticeRepository.deleteById(noticeId);
 		deactivateAttachFiles.deactivate(notice.getFileIds());
+		noticeRepository.deleteById(noticeId);
 	}
 }
