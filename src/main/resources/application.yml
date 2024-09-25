@@ -28,3 +28,7 @@ app:
   upload:
     file-path: src/main/resources/images
     extensions: pdf, doc, docx, xls, xlsx, ppt, pptx, jpg, jpeg, png, gif, bmp, zip, rar, txt, csv
+  crypto:
+    aes256:
+      key: fUFlthxpeceJVBqcYp+XAM/izCw17H3q7UIy8wRT4fQ=
+      iv: kyULcMvM4oYyS6xncKWA5w==

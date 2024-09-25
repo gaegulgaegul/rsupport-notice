@@ -1,5 +1,6 @@
 package com.project.core.config.app;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.project.core.support.crypto.Aes256Crypto;
 
 @Configuration
 public class AppConfig {
@@ -25,5 +27,10 @@ public class AppConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	public Aes256Crypto aes256Crypto(@Value("${app.crypto.aes256.key}") String key, @Value("${app.crypto.aes256.iv}") String iv) {
+		return new Aes256Crypto(key, iv);
 	}
 }

@@ -1,6 +1,9 @@
 package com.project.application.account.domain;
 
+import com.project.core.support.jpa.CryptoConverter;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,12 +28,14 @@ public class AccountEntity {
 	@Column(name = "id")
 	private Long id;
 
+	@Convert(converter = CryptoConverter.class)
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
 
 	@Column(name = "password", length = 255, nullable = false)
 	private String password;
 
+	@Convert(converter = CryptoConverter.class)
 	@Column(name = "name", length = 255, nullable = false)
 	private String name;
 }
