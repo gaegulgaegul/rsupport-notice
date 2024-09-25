@@ -111,7 +111,8 @@ public class NoticeEntity extends OperatorEntity {
 		Set<Long> newFileIds = newFiles.stream()
 			.map(NoticeFileEntity::getFileId)
 			.collect(Collectors.toSet());
-		/* 삭제되는 정보 제외 */
+
+		/* 삭제 정보 제외 */
 		this.files.removeIf(file -> !newFileIds.contains(file.getFileId()));
 
 		/* 신규 정보 추가 */
@@ -121,5 +122,12 @@ public class NoticeEntity extends OperatorEntity {
 				this.files.add(newFile);
 			}
 		});
+	}
+
+	public List<Long> getRemoveFileIds(List<Long> newFileIds) {
+		return this.files.stream()
+			.map(NoticeFileEntity::getFileId)
+			.filter(fileId -> !newFileIds.contains(fileId))
+			.toList();
 	}
 }

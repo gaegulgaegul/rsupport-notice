@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Usecase
 @RequiredArgsConstructor
-class FileUsecase implements GetAttachFiles, ActiveAttachFiles {
+class FileUsecase implements GetAttachFiles, ActiveAttachFiles, DeactivateAttachFiles {
 	private final AttachFileRepository attachFileRepository;
 
 	@Override
@@ -35,8 +35,22 @@ class FileUsecase implements GetAttachFiles, ActiveAttachFiles {
 		}
 
 		List<AttachFileEntity> saveFiles = files.stream()
-			.filter(AttachFileEntity::isNotActive)
+			.filter(AttachFileEntity::isDeactivate)
 			.peek(AttachFileEntity::active)
+			.toList();
+		attachFileRepository.saveAll(saveFiles);
+	}
+
+	@Override
+	public void deactivate(List<Long> fileIds) {
+		List<AttachFileEntity> files = attachFileRepository.findAllByIdIn(fileIds);
+		if (ObjectUtils.isEmpty(files)) {
+			return;
+		}
+
+		List<AttachFileEntity> saveFiles = files.stream()
+			.filter(AttachFileEntity::isActive)
+			.peek(AttachFileEntity::deactivate)
 			.toList();
 		attachFileRepository.saveAll(saveFiles);
 	}

@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.project.application.account.vo.Account;
+import com.project.application.file.usecase.ActiveAttachFiles;
+import com.project.application.file.usecase.DeactivateAttachFiles;
 import com.project.application.file.usecase.GetAttachFiles;
 import com.project.application.file.vo.AttachFileInfo;
 import com.project.application.notice.domain.NoticeEntity;
@@ -28,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class NoticeModifier {
 	private final NoticeRepository noticeRepository;
 	private final GetAttachFiles getAttachFiles;
+	private final ActiveAttachFiles activeAttachFiles;
+	private final DeactivateAttachFiles deactivateAttachFiles;
 
 	@Transactional
 	@CachePut(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
@@ -44,6 +48,8 @@ public class NoticeModifier {
 			throw new ApplicationException(NoticeErrorCode.ANOTHER_AUTHOR);
 		}
 
+		List<Long> removeFileIds = notice.getRemoveFileIds(request.fileIds());
+
 		notice.modify(toNoticeBuilder(request, files));
 
 		if (notice.isInvalidDuration()) {
@@ -51,6 +57,8 @@ public class NoticeModifier {
 		}
 
 		noticeRepository.save(notice);
+		activeAttachFiles.active(toActiveFileIds(request.fileIds(), removeFileIds));
+		deactivateAttachFiles.deactivate(removeFileIds);
 		return toResponse(notice);
 	}
 
@@ -61,6 +69,12 @@ public class NoticeModifier {
 		ArrayList<Long> newFileIds = new ArrayList<>(fileIds);
 		newFileIds.removeAll(dbFileIds);
 		return !newFileIds.isEmpty();
+	}
+
+	private List<Long> toActiveFileIds(List<Long> fileIds, List<Long> removeFileIds) {
+		List<Long> newFileIds = new ArrayList<>(fileIds);
+		newFileIds.removeAll(removeFileIds);
+		return newFileIds;
 	}
 
 	private NoticeEntity.NoticeEntityBuilder toNoticeBuilder(NoticeModifyRequest request, List<AttachFileInfo> files) {

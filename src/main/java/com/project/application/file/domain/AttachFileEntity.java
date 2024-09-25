@@ -62,11 +62,15 @@ public class AttachFileEntity {
 		this.active = true;
 	}
 
+	public void deactivate() {
+		this.active = false;
+	}
+
 	public boolean isActive() {
 		return this.active != null && this.active;
 	}
 
-	public boolean isNotActive() {
+	public boolean isDeactivate() {
 		return !isActive();
 	}
 }
