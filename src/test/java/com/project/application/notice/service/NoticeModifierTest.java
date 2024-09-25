@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.account.vo.Account;
@@ -149,7 +150,7 @@ class NoticeModifierTest {
 		);
 
 		assertThatThrownBy(() -> sut.modify(null, request, account))
-			.isInstanceOf(ApplicationException.class);
+			.isInstanceOf(InvalidDataAccessApiUsageException.class);
 	}
 
 	private void assertModifiedNotice(NoticeEntity notice, int expected) {

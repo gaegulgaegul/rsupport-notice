@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
@@ -52,12 +53,14 @@ class NoticeDeleterTest {
 
 	@Test
 	void 존재하지_않는_ID에_해당하는_정보를_삭제하면_예외발생() {
-		assertThatThrownBy(() -> sut.delete(99L, account));
+		assertThatThrownBy(() -> sut.delete(99L, account))
+			.isInstanceOf(ApplicationException.class);
 	}
 
 	@Test
 	void null을_전달하면_예외발생() {
-		assertThatThrownBy(() -> sut.delete(null, account));
+		assertThatThrownBy(() -> sut.delete(null, account))
+			.isInstanceOf(InvalidDataAccessApiUsageException.class);
 	}
 
 	private Long createNotice() {

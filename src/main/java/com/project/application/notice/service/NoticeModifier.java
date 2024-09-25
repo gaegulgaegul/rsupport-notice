@@ -15,6 +15,7 @@ import com.project.application.notice.dto.request.NoticeModifyRequest;
 import com.project.application.notice.error.NoticeErrorCode;
 import com.project.core.exception.ApplicationException;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,7 +24,7 @@ public class NoticeModifier {
 	private final NoticeRepository noticeRepository;
 
 	@Transactional
-	public void modify(Long noticeId, NoticeModifyRequest request, Account account) {
+	public void modify(@NotNull Long noticeId, NoticeModifyRequest request, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
 
