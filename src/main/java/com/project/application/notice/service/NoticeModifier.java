@@ -3,6 +3,7 @@ package com.project.application.notice.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.project.application.account.vo.Account;
@@ -14,7 +15,6 @@ import com.project.application.notice.dto.request.NoticeModifyRequest;
 import com.project.application.notice.error.NoticeErrorCode;
 import com.project.core.exception.ApplicationException;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service

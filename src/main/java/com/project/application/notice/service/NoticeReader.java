@@ -3,8 +3,10 @@ package com.project.application.notice.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
@@ -20,9 +22,16 @@ import lombok.RequiredArgsConstructor;
 public class NoticeReader {
 	private final NoticeRepository noticeRepository;
 
-	public Object read(Long noticeId) {
+	@Transactional
+	public NoticeReadResponse read(Long noticeId, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
+
+		if (notice.isNotViewed(account.getId())) {
+			notice.view(account.getId());
+			noticeRepository.save(notice);
+		}
+
 		return toResponse(notice);
 	}
 
@@ -31,7 +40,7 @@ public class NoticeReader {
 			.noticeId(notice.getId())
 			.title(notice.getTitle())
 			.content(notice.getContent())
-			.viewCount(notice.getViewUsers().size())
+			.viewCount(notice.getViewCount())
 			.createdAt(notice.getCreatedAt())
 			.createdBy(notice.getCreatedBy())
 			.lastModifiedAt(notice.getLastModifiedAt())

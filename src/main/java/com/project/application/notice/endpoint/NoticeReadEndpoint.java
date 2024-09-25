@@ -5,7 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.application.account.vo.Account;
+import com.project.application.notice.dto.response.NoticeReadResponse;
 import com.project.application.notice.service.NoticeReader;
+import com.project.core.authorization.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,9 +21,10 @@ class NoticeReadEndpoint {
 
 	private final NoticeReader noticeReader;
 
+	@Authorization
 	@Operation(summary = "공지사항 조회")
 	@GetMapping("/api/notices/{noticeId}")
-	ResponseEntity<?> readNotice(@PathVariable Long noticeId) {
-		return ResponseEntity.ok(noticeReader.read(noticeId));
+	ResponseEntity<NoticeReadResponse> readNotice(Account account, @PathVariable Long noticeId) {
+		return ResponseEntity.ok(noticeReader.read(noticeId, account));
 	}
 }

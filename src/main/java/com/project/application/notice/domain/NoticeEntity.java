@@ -61,7 +61,7 @@ public class NoticeEntity extends OperatorEntity {
 		name = "tb_notice_view",
 		joinColumns = @JoinColumn(name = "notice_id")
 	)
-	private List<String> viewUsers = new ArrayList<>();
+	private List<Long> viewUsers = new ArrayList<>();
 
 	public void linkFiles(List<NoticeFileEntity> files) {
 		if (ObjectUtils.isEmpty(files)) {
@@ -86,5 +86,20 @@ public class NoticeEntity extends OperatorEntity {
 
 	public boolean isNotAuthor(Long accountId) {
 		return !this.getCreatedBy().equals(accountId);
+	}
+
+	public boolean isNotViewed(Long accountId) {
+		return !this.viewUsers.contains(accountId);
+	}
+
+	public void view(Long accountId) {
+		if (ObjectUtils.isEmpty(viewUsers)) {
+			this.viewUsers = new ArrayList<>();
+		}
+		this.viewUsers.add(accountId);
+	}
+
+	public Integer getViewCount() {
+		return ObjectUtils.isEmpty(viewUsers) ? 0 : this.viewUsers.size();
 	}
 }
