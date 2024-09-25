@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.application.file.dto.request.FileUploadRequest;
 import com.project.application.file.dto.response.FileUploadResponse;
 import com.project.application.file.service.FileUploader;
-import com.project.core.authorization.Authorization;
+import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

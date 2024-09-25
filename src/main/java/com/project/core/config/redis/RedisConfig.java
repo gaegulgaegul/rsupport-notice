@@ -1,4 +1,4 @@
-package com.project.core.config;
+package com.project.core.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

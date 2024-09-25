@@ -37,5 +37,4 @@ public class NoticeFileEntity {
 	public void link(Long noticeId) {
 		this.noticeId = noticeId;
 	}
-
 }

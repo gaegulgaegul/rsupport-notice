@@ -1,4 +1,4 @@
-package com.project.core.config;
+package com.project.core.config.docs;
 
 import org.springframework.context.annotation.Configuration;
 

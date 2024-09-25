@@ -10,17 +10,15 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.application.notice.dto.response.NoticeReadResponse;
 
-@DisplayName("공지사항 수정 테스트")
+@DisplayName("공지사항 조회 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest
-@Transactional
 class NoticeReaderTest {
 
 	@Autowired private NoticeRepository noticeRepository;

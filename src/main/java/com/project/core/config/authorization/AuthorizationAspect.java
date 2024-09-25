@@ -1,8 +1,6 @@
-package com.project.core.authorization;
+package com.project.core.config.authorization;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -19,7 +17,7 @@ import jakarta.servlet.http.HttpSession;
 @Component
 public class AuthorizationAspect {
 
-	@Pointcut("@annotation(com.project.core.authorization.Authorization)")
+	@Pointcut("@annotation(com.project.core.support.annotation.Authorization)")
 	public void pointCut() {}
 
 	@Before("pointCut()")

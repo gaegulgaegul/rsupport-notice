@@ -1,4 +1,4 @@
-package com.project.core.authorization;
+package com.project.core.config.authorization;
 
 import org.springframework.http.HttpStatus;
 

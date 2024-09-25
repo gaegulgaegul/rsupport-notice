@@ -169,8 +169,8 @@ class NoticeModifierTest {
 			.content("공지사항등록테스트")
 			.from(LocalDateTime.of(2024, 9, 1, 0, 0, 0))
 			.to(LocalDateTime.of(2024, 9, 30, 0, 0, 0))
-			.files(files)
 			.build();
+		notice.linkFiles(files);
 		noticeRepository.save(notice);
 		return notice.getId();
 	}

@@ -3,6 +3,8 @@ package com.project.application.notice.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.util.ObjectUtils;
 
@@ -63,13 +65,24 @@ public class NoticeEntity extends OperatorEntity {
 	)
 	private List<Long> viewUsers = new ArrayList<>();
 
-	public void linkFiles(List<NoticeFileEntity> files) {
-		if (ObjectUtils.isEmpty(files)) {
+	public void linkFiles(List<NoticeFileEntity> newFiles) {
+		if (ObjectUtils.isEmpty(this.files)) {
+			this.files = new ArrayList<>();
+			this.files.addAll(newFiles);
+			this.files.forEach(item -> item.link(this.id));
 			return;
 		}
 
-		this.files = new ArrayList<>(files);
-		this.files.forEach(item -> item.link(this.id));
+		Set<Long> newFileIds = newFiles.stream()
+			.map(NoticeFileEntity::getFileId)
+			.collect(Collectors.toSet());
+		this.files.removeIf(file -> !newFileIds.contains(file.getFileId()));
+		newFiles.forEach(newFile -> {
+			if (this.files.stream().noneMatch(file -> file.getFileId().equals(newFile.getFileId()))) {
+				newFile.link(this.id);
+				this.files.add(newFile);
+			}
+		});
 	}
 
 	public void modify(NoticeEntity.NoticeEntityBuilder builder) {

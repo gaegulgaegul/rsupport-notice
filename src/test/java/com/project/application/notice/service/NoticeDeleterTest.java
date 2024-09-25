@@ -69,12 +69,12 @@ class NoticeDeleterTest {
 			.content("공지사항삭제테스트")
 			.from(LocalDateTime.of(2024, 9, 1, 0, 0, 0))
 			.to(LocalDateTime.of(2024, 9, 30, 0, 0, 0))
-			.files(List.of(
-				NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
-				NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build(),
-				NoticeFileEntity.builder().fileId(3L).fileName("세번째 파일.jpg").build()
-			))
 			.build();
+		notice.linkFiles(List.of(
+			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(3L).fileName("세번째 파일.jpg").build()
+		));
 		noticeRepository.save(notice);
 		return notice.getId();
 	}

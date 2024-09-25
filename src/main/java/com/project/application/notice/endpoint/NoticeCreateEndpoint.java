@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.application.account.vo.Account;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.application.notice.service.NoticeCreator;
-import com.project.core.authorization.Authorization;
+import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

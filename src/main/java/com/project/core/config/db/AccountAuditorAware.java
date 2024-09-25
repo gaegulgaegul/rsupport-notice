@@ -1,4 +1,4 @@
-package com.project.core.config;
+package com.project.core.config.db;
 
 import java.util.Optional;
 

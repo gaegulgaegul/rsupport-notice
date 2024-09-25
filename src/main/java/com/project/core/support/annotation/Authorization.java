@@ -1,4 +1,4 @@
-package com.project.core.authorization;
+package com.project.core.support.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

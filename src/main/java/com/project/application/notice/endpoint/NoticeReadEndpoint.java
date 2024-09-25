@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.application.account.vo.Account;
 import com.project.application.notice.dto.response.NoticeReadResponse;
 import com.project.application.notice.service.NoticeReader;
-import com.project.core.authorization.Authorization;
+import com.project.core.support.annotation.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
