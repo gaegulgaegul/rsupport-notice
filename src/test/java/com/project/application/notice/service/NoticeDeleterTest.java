@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
+import com.project.core.exception.ApplicationException;
 
 @DisplayName("공지사항 삭제 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -28,8 +30,37 @@ class NoticeDeleterTest {
 	@Autowired
 	private NoticeDeleter sut;
 
+	private final Account account = Account.DEFAULT;
+	private final Account anotherAccount = Account.builder().id(1L).build();
+
 	@Test
 	void 공지사항은_ID에_해당하는_정보를_삭제할_수_있다() {
+		Long noticeId = createNotice();
+
+		sut.delete(noticeId, account);
+
+		assertThat(noticeRepository.existsById(noticeId)).isFalse();
+	}
+
+	@Test
+	void 공지사항은_등록자_외_사용자는_삭제하면_예외발생() {
+		Long noticeId = createNotice();
+
+		assertThatThrownBy(() -> sut.delete(noticeId, anotherAccount))
+			.isInstanceOf(ApplicationException.class);
+	}
+
+	@Test
+	void 존재하지_않는_ID에_해당하는_정보를_삭제하면_예외발생() {
+		assertThatThrownBy(() -> sut.delete(99L, account));
+	}
+
+	@Test
+	void null을_전달하면_예외발생() {
+		assertThatThrownBy(() -> sut.delete(null, account));
+	}
+
+	private Long createNotice() {
 		NoticeEntity notice = NoticeEntity.builder()
 			.title("공지사항삭제테스트")
 			.content("공지사항삭제테스트")
@@ -42,21 +73,7 @@ class NoticeDeleterTest {
 			))
 			.build();
 		noticeRepository.save(notice);
-		Long noticeId = notice.getId();
-
-		sut.delete(noticeId, account);
-
-		assertThat(noticeRepository.existsById(noticeId)).isFalse();
-	}
-
-	@Test
-	void 존재하지_않는_ID에_해당하는_정보를_삭제하면_예외발생() {
-		assertThatThrownBy(() -> sut.delete(99L, account));
-	}
-
-	@Test
-	void null을_전달하면_예외발생() {
-		assertThatThrownBy(() -> sut.delete(null, account));
+		return notice.getId();
 	}
 
 }

@@ -34,7 +34,8 @@ class NoticeModifierTest {
 
 	@Autowired private NoticeModifier sut;
 
-	private Account account = Account.DEFAULT;
+	private final Account account = Account.DEFAULT;
+	private final Account anotherAccount = Account.builder().id(1L).build();
 
 	@BeforeEach
 	void setUp() {
@@ -118,6 +119,36 @@ class NoticeModifierTest {
 		);
 
 		assertThatThrownBy(() -> sut.modify(noticeId, request, account))
+			.isInstanceOf(ApplicationException.class);
+	}
+
+	@Test
+	void 등록자가_아닌_사용자가_수정하면_예외발생() {
+		Long noticeId = createNotice(List.of());
+
+		NoticeModifyRequest request = new NoticeModifyRequest(
+			"공지사항수정테스트",
+			"공지사항수정테스트",
+			LocalDateTime.of(2024, 10, 1, 0, 0, 0),
+			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
+			List.of()
+		);
+
+		assertThatThrownBy(() -> sut.modify(noticeId, request, anotherAccount))
+			.isInstanceOf(ApplicationException.class);
+	}
+
+	@Test
+	void ID에_null을_전달하면_예외발생() {
+		NoticeModifyRequest request = new NoticeModifyRequest(
+			"공지사항수정테스트",
+			"공지사항수정테스트",
+			LocalDateTime.of(2024, 10, 1, 0, 0, 0),
+			LocalDateTime.of(2024, 10, 30, 0, 0, 0),
+			List.of()
+		);
+
+		assertThatThrownBy(() -> sut.modify(null, request, account))
 			.isInstanceOf(ApplicationException.class);
 	}
 
