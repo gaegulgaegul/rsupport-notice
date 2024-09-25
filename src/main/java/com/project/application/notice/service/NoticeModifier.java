@@ -27,7 +27,8 @@ public class NoticeModifier {
 	private final NoticeRepository noticeRepository;
 
 	@Transactional
-	public void modify(@NotNull Long noticeId, NoticeModifyRequest request, Account account) {
+	@CachePut(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
+	public NoticeReadResponse modify(@NotNull Long noticeId, NoticeModifyRequest request, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
 
@@ -42,12 +43,6 @@ public class NoticeModifier {
 		}
 
 		noticeRepository.save(notice);
-
-		refresh(notice);
-	}
-
-	@CachePut(value = "notices", key = "#notice.id", cacheManager = "redisCacheManager")
-	public NoticeReadResponse refresh(NoticeEntity notice) {
 		return toResponse(notice);
 	}
 
