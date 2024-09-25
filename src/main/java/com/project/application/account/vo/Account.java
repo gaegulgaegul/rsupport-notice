@@ -10,6 +10,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class Account implements Serializable {
+	public static final long serialVersionUID = 1L;
+	public static final Account DEFAULT = Account.builder()
+		.id(0L)
+		.email("account@gmail.com")
+		.name("기본 사용자")
+		.build();
+
 	private Long id;
 	private String email;
 	private String name;

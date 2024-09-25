@@ -17,9 +17,9 @@ public class AccountAuditorAware implements AuditorAware<Long> {
 
 	@Override
 	public Optional<Long> getCurrentAuditor() {
-		Long accountId = sessionManager.session()
-			.map(session -> ((Account)session.getAttribute("account")).getId())
-			.orElse(0L);
-		return Optional.of(accountId);
+		Account account = sessionManager.session()
+			.map(session -> (Account)session.getAttribute("account"))
+			.orElse(Account.DEFAULT);
+		return Optional.of(account.getId());
 	}
 }

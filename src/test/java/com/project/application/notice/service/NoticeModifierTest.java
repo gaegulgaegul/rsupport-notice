@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.application.account.vo.Account;
 import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
@@ -32,6 +33,8 @@ class NoticeModifierTest {
 	@Autowired private NoticeRepository noticeRepository;
 
 	@Autowired private NoticeModifier sut;
+
+	private Account account = Account.DEFAULT;
 
 	@BeforeEach
 	void setUp() {

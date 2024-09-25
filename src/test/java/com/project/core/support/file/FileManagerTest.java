@@ -1,4 +1,4 @@
-package com.project.core.file;
+package com.project.core.support.file;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
