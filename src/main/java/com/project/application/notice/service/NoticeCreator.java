@@ -26,12 +26,7 @@ public class NoticeCreator {
 
 	public NoticeCreateResponse create(NoticeCreateRequest request) {
 		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
-		List<Long> dbFileIds = files.stream()
-			.map(AttachFileInfo::fileId)
-			.toList();
-		ArrayList<Long> newFileIds = new ArrayList<>(request.fileIds());
-		newFileIds.removeAll(dbFileIds);
-		if (!newFileIds.isEmpty()) {
+		if (hasInvalidFiles(files, request.fileIds())) {
 			throw new ApplicationException(NoticeErrorCode.INVALID_FILE);
 		}
 
@@ -41,6 +36,15 @@ public class NoticeCreator {
 		}
 		noticeRepository.save(notice);
 		return new NoticeCreateResponse(notice.getId());
+	}
+
+	private boolean hasInvalidFiles(List<AttachFileInfo> files, List<Long> fileIds) {
+		List<Long> dbFileIds = files.stream()
+			.map(AttachFileInfo::fileId)
+			.toList();
+		ArrayList<Long> newFileIds = new ArrayList<>(fileIds);
+		newFileIds.removeAll(dbFileIds);
+		return !newFileIds.isEmpty();
 	}
 
 	private NoticeEntity toNotice(NoticeCreateRequest request, List<AttachFileInfo> files) {
