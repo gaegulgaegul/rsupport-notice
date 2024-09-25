@@ -1,6 +1,7 @@
 package com.project.core.config.app;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.project.core.config.filter.CacheResponseFilter;
 import com.project.core.support.crypto.Aes256Crypto;
 import com.project.core.support.crypto.RsaCrypto;
 
@@ -38,5 +40,13 @@ public class AppConfig {
 	@Bean
 	public RsaCrypto rsaCrypto(@Value("${app.crypto.rsa.public-key}") String publicKey, @Value("${app.crypto.rsa.private-key}") String privateKey) {
 		return new RsaCrypto(publicKey, privateKey);
+	}
+
+	@Bean
+	public FilterRegistrationBean<CacheResponseFilter> cacheResponseFilter() {
+		FilterRegistrationBean<CacheResponseFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new CacheResponseFilter());
+		registrationBean.addUrlPatterns("/*");
+		return registrationBean;
 	}
 }
