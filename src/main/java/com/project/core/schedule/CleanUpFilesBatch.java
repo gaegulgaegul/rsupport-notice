@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 @ScheduledBatch
 @RequiredArgsConstructor
-public class leanUpFilesBatch {
+public class CleanUpFilesBatch {
 	private final CleanUpDeactivatedFiles cleanUpDeactivatedFiles;
 
 	@Scheduled(cron = "0 0 0 * * ?")
