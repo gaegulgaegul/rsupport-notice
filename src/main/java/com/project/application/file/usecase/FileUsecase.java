@@ -4,22 +4,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 import com.project.application.file.domain.AttachFileEntity;
 import com.project.application.file.domain.AttachFileRepository;
+import com.project.application.file.error.AttachFileErrorCode;
 import com.project.application.file.vo.AttachFileInfo;
+import com.project.core.exception.ApplicationException;
 import com.project.core.support.annotation.Usecase;
 import com.project.core.support.file.FileManager;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Usecase
 @RequiredArgsConstructor
-class FileUsecase implements GetAttachFiles, ActiveAttachFiles, DeactivateAttachFiles, CleanUpDeactivatedFiles {
-	private static final Logger log = LoggerFactory.getLogger(FileUsecase.class);
+class FileUsecase implements GetAttachFiles, ActiveAttachFiles, DeactivateAttachFiles, CleanUpDeactivatedFiles, CheckFileOwner {
 	private final AttachFileRepository attachFileRepository;
 	private final FileManager fileManager;
 
@@ -77,5 +78,19 @@ class FileUsecase implements GetAttachFiles, ActiveAttachFiles, DeactivateAttach
 			}
 		}
 		attachFileRepository.deleteAll(deleteFiles);
+	}
+
+	@Override
+	public void check(Long accountId, List<Long> fileIds) {
+		List<AttachFileEntity> files = attachFileRepository.findAllByIdIn(fileIds);
+		if (ObjectUtils.isEmpty(files)) {
+			return;
+		}
+
+		for (AttachFileEntity file : files) {
+			if (!file.getCreatedBy().equals(accountId)) {
+				throw new ApplicationException(AttachFileErrorCode.NO_OWNER);
+			}
+		}
 	}
 }

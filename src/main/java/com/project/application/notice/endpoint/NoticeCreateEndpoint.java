@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.application.account.vo.Account;
 import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.application.notice.service.NoticeCreator;
@@ -26,8 +27,8 @@ class NoticeCreateEndpoint {
 	@Authorization
 	@Operation(summary = "공지사항 생성")
 	@PostMapping("/api/notices")
-	ResponseEntity<Void> createNotice(@RequestBody @Valid NoticeCreateRequest request) {
-		NoticeCreateResponse response = noticeCreator.create(request);
+	ResponseEntity<Void> createNotice(Account account, @RequestBody @Valid NoticeCreateRequest request) {
+		NoticeCreateResponse response = noticeCreator.create(request, account);
 		return ResponseEntity.created(URI.create("/api/notices" + response.noticeId())).build();
 	}
 }

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.project.application.account.vo.Account;
 import com.project.application.file.usecase.ActiveAttachFiles;
+import com.project.application.file.usecase.CheckFileOwner;
 import com.project.application.file.usecase.GetAttachFiles;
 import com.project.application.file.vo.AttachFileInfo;
 import com.project.application.notice.domain.NoticeEntity;
@@ -26,9 +28,12 @@ public class NoticeCreator {
 	private final NoticeRepository noticeRepository;
 	private final GetAttachFiles getAttachFiles;
 	private final ActiveAttachFiles activeAttachFiles;
+	private final CheckFileOwner checkFileOwner;
 
 	@Transactional
-	public NoticeCreateResponse create(NoticeCreateRequest request) {
+	public NoticeCreateResponse create(NoticeCreateRequest request, Account account) {
+		checkFileOwner.check(account.getId(), request.fileIds());
+
 		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
 		if (hasInvalidFiles(files, request.fileIds())) {
 			throw new ApplicationException(NoticeErrorCode.INVALID_FILE);

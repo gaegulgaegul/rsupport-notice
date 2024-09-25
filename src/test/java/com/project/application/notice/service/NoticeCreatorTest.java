@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.application.account.vo.Account;
 import com.project.application.file.domain.AttachFileEntity;
 import com.project.application.file.domain.AttachFileRepository;
 import com.project.application.notice.domain.NoticeEntity;
@@ -33,6 +34,8 @@ class NoticeCreatorTest {
 	@Autowired private AttachFileRepository attachFileRepository;
 
 	@Autowired private NoticeCreator sut;
+
+	private final Account account = Account.DEFAULT;
 
 	private AttachFileEntity file1;
 	private AttachFileEntity file2;
@@ -56,7 +59,7 @@ class NoticeCreatorTest {
 			LocalDateTime.of(2024, 9, 30, 0, 0, 0),
 			List.of()
 		);
-		NoticeCreateResponse result = sut.create(request);
+		NoticeCreateResponse result = sut.create(request, account);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -73,7 +76,7 @@ class NoticeCreatorTest {
 			List.of(file1.getId(), file2.getId())
 		);
 
-		NoticeCreateResponse result = sut.create(request);
+		NoticeCreateResponse result = sut.create(request, account);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -90,7 +93,7 @@ class NoticeCreatorTest {
 			List.of(file1.getId(), file1.getId())
 		);
 
-		NoticeCreateResponse result = sut.create(request);
+		NoticeCreateResponse result = sut.create(request, account);
 		NoticeEntity notice = noticeRepository.findById(result.noticeId()).get();
 
 		assertThat(result.noticeId()).isNotZero();
@@ -107,7 +110,7 @@ class NoticeCreatorTest {
 			List.of(3L)
 		);
 
-		assertThatThrownBy(() -> sut.create(request))
+		assertThatThrownBy(() -> sut.create(request, account))
 			.isInstanceOf(ApplicationException.class);
 	}
 
@@ -121,7 +124,7 @@ class NoticeCreatorTest {
 			List.of()
 		);
 
-		assertThatThrownBy(() -> sut.create(request))
+		assertThatThrownBy(() -> sut.create(request, account))
 			.isInstanceOf(ApplicationException.class);
 	}
 

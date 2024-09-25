@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.project.application.account.vo.Account;
 import com.project.application.file.usecase.ActiveAttachFiles;
+import com.project.application.file.usecase.CheckFileOwner;
 import com.project.application.file.usecase.DeactivateAttachFiles;
 import com.project.application.file.usecase.GetAttachFiles;
 import com.project.application.file.vo.AttachFileInfo;
@@ -32,20 +33,23 @@ public class NoticeModifier {
 	private final GetAttachFiles getAttachFiles;
 	private final ActiveAttachFiles activeAttachFiles;
 	private final DeactivateAttachFiles deactivateAttachFiles;
+	private final CheckFileOwner checkFileOwner;
 
 	@Transactional
 	@CachePut(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public NoticeReadResponse modify(@NotNull Long noticeId, NoticeModifyRequest request, Account account) {
-		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
-		if (hasInvalidFiles(files, request.fileIds())) {
-			throw new ApplicationException(NoticeErrorCode.INVALID_FILE);
-		}
-
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
 
 		if (notice.isNotAuthor(account.getId())) {
 			throw new ApplicationException(NoticeErrorCode.ANOTHER_AUTHOR);
+		}
+
+		checkFileOwner.check(account.getId(), request.fileIds());
+
+		List<AttachFileInfo> files = getAttachFiles.read(request.fileIds());
+		if (hasInvalidFiles(files, request.fileIds())) {
+			throw new ApplicationException(NoticeErrorCode.INVALID_FILE);
 		}
 
 		List<Long> removeFileIds = notice.getRemoveFileIds(request.fileIds());
