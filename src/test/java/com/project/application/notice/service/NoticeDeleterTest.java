@@ -44,19 +44,19 @@ class NoticeDeleterTest {
 		noticeRepository.save(notice);
 		Long noticeId = notice.getId();
 
-		sut.delete(noticeId);
+		sut.delete(noticeId, account);
 
 		assertThat(noticeRepository.existsById(noticeId)).isFalse();
 	}
 
 	@Test
 	void 존재하지_않는_ID에_해당하는_정보를_삭제하면_예외발생() {
-		assertThatThrownBy(() -> sut.delete(99L));
+		assertThatThrownBy(() -> sut.delete(99L, account));
 	}
 
 	@Test
 	void null을_전달하면_예외발생() {
-		assertThatThrownBy(() -> sut.delete(null));
+		assertThatThrownBy(() -> sut.delete(null, account));
 	}
 
 }
