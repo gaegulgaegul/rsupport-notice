@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.project.core.support.crypto.Aes256Crypto;
+import com.project.core.support.crypto.RsaCrypto;
 
 @Configuration
 public class AppConfig {
@@ -32,5 +33,10 @@ public class AppConfig {
 	@Bean
 	public Aes256Crypto aes256Crypto(@Value("${app.crypto.aes256.key}") String key, @Value("${app.crypto.aes256.iv}") String iv) {
 		return new Aes256Crypto(key, iv);
+	}
+
+	@Bean
+	public RsaCrypto rsaCrypto(@Value("${app.crypto.rsa.public-key}") String publicKey, @Value("${app.crypto.rsa.private-key}") String privateKey) {
+		return new RsaCrypto(publicKey, privateKey);
 	}
 }
