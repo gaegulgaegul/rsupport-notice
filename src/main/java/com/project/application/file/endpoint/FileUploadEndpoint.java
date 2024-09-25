@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.application.file.dto.request.FileUploadRequest;
 import com.project.application.file.dto.response.FileUploadResponse;
 import com.project.application.file.service.FileUploader;
+import com.project.core.authorization.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 class FileUploadEndpoint {
 	private final FileUploader fileUploader;
 
+	@Authorization
 	@Operation(summary = "파일 업로드")
 	@PostMapping(value = "/api/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	ResponseEntity<List<FileUploadResponse>> uploadFiles(@ModelAttribute FileUploadRequest request) {

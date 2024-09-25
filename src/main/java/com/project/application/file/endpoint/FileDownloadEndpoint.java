@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.application.file.dto.response.FileDownloadResponse;
 import com.project.application.file.service.FileDownloader;
+import com.project.core.authorization.Authorization;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 class FileDownloadEndpoint {
 	private final FileDownloader fileDownloader;
 
+	@Authorization
 	@Operation(summary = "파일 다운로드")
 	@PostMapping("/api/files/{fileId}")
 	ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
