@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import com.project.application.account.domain.QAccountEntity;
 import com.project.application.notice.domain.QNoticeEntity;
 import com.project.application.notice.dto.response.NoticeSearchResponse;
 import com.querydsl.core.types.Order;
@@ -25,6 +26,7 @@ class NoticeQueryRepositoryImpl implements NoticeQueryRepository {
 	private final JPAQueryFactory jpaQueryFactory;
 
 	private QNoticeEntity notice = QNoticeEntity.noticeEntity;
+	private QAccountEntity account = QAccountEntity.accountEntity;
 
 	@Override
 	public Page<NoticeSearchResponse> searchAll(Pageable pageable) {
@@ -52,8 +54,10 @@ class NoticeQueryRepositoryImpl implements NoticeQueryRepository {
 				notice.content,
 				notice.createdAt,
 				notice.viewUsers.size().as("viewCount"),
-				notice.createdBy
+				account.name.as("authorName")
 			))
-			.from(notice);
+			.from(notice)
+			.innerJoin(account)
+			.on(notice.createdBy.eq(account.id));
 	}
 }
