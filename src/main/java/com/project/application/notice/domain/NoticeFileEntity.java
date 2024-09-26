@@ -32,7 +32,7 @@ public class NoticeFileEntity {
 	private Long fileId;
 
 	@Column(name = "file_name", nullable = false, length = 100)
-	private String fileName;
+	private String filename;
 
 	public void link(Long noticeId) {
 		this.noticeId = noticeId;

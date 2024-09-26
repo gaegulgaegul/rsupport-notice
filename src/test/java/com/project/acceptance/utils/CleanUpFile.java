@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class CleanUpFile {
 
 	@Value("${app.upload.file-path}")
-	String uploadFilePath;
+	private String uploadFilePath;
 
 	public void execute() throws IOException {
 		if (uploadFilePath == null) return;

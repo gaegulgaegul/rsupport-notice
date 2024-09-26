@@ -78,8 +78,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일있고_수정_파일없이_수정_할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
-			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
+			NoticeFileEntity.builder().fileId(file1.getId()).filename(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).filename(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -98,8 +98,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지사항은_기존_파일에_다른_파일을_더_추가할_수_있다() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
-			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
+			NoticeFileEntity.builder().fileId(file1.getId()).filename(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).filename(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -118,8 +118,8 @@ class NoticeModifierTest {
 	@Test
 	void 존재하지_않는_파일은_공지사항에_등록하면_예외발생() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
-			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
+			NoticeFileEntity.builder().fileId(file1.getId()).filename(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).filename(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(
@@ -137,8 +137,8 @@ class NoticeModifierTest {
 	@Test
 	void 공지기간_중_시작일이_종료일보다_후일이면_예외발생() {
 		Long noticeId = createNotice(List.of(
-			NoticeFileEntity.builder().fileId(file1.getId()).fileName(file1.getOriginalFilename()).build(),
-			NoticeFileEntity.builder().fileId(file2.getId()).fileName(file2.getOriginalFilename()).build()
+			NoticeFileEntity.builder().fileId(file1.getId()).filename(file1.getOriginalFilename()).build(),
+			NoticeFileEntity.builder().fileId(file2.getId()).filename(file2.getOriginalFilename()).build()
 		));
 
 		NoticeModifyRequest request = new NoticeModifyRequest(

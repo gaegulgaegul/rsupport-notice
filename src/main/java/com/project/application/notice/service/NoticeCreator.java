@@ -77,7 +77,7 @@ public class NoticeCreator {
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())
-				.fileName(item.filename())
+				.filename(item.filename())
 				.build())
 			.distinct()
 			.toList();

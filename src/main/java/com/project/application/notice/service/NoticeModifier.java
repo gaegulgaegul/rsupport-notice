@@ -98,7 +98,7 @@ public class NoticeModifier {
 			.distinct()
 			.map(item -> NoticeFileEntity.builder()
 				.fileId(item.fileId())
-				.fileName(item.filename())
+				.filename(item.filename())
 				.build())
 			.distinct()
 			.toList();
@@ -125,7 +125,7 @@ public class NoticeModifier {
 		return files.stream()
 			.map(item -> NoticeFileResponse.builder()
 				.fileId(item.getFileId())
-				.fileName(item.getFileName())
+				.filename(item.getFilename())
 				.build())
 			.toList();
 	}

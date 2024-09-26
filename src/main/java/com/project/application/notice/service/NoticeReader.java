@@ -65,7 +65,7 @@ public class NoticeReader {
 		return files.stream()
 			.map(item -> NoticeFileResponse.builder()
 				.fileId(item.getFileId())
-				.fileName(item.getFileName())
+				.filename(item.getFilename())
 				.build())
 			.toList();
 	}

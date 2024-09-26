@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record NoticeFileResponse(
 	Long fileId,
-	String fileName
+	String filename
 ) {
 
 }

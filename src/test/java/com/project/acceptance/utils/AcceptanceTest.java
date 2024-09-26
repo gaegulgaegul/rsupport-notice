@@ -21,11 +21,11 @@ public class AcceptanceTest {
 	public void acceptanceSetUp() {
 		RestAssured.port = port;
 		cleanUpDatabase.execute();
-
 	}
 
 	@AfterEach
 	void tearDown() throws IOException {
 		cleanUpFile.execute();
 	}
+
 }

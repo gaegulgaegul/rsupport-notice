@@ -71,9 +71,9 @@ class NoticeDeleterTest {
 			.to(LocalDateTime.of(2024, 9, 30, 0, 0, 0))
 			.build();
 		notice.linkFiles(List.of(
-			NoticeFileEntity.builder().fileId(1L).fileName("첫번째 파일.jpg").build(),
-			NoticeFileEntity.builder().fileId(2L).fileName("두번째 파일.jpg").build(),
-			NoticeFileEntity.builder().fileId(3L).fileName("세번째 파일.jpg").build()
+			NoticeFileEntity.builder().fileId(1L).filename("첫번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(2L).filename("두번째 파일.jpg").build(),
+			NoticeFileEntity.builder().fileId(3L).filename("세번째 파일.jpg").build()
 		));
 		noticeRepository.save(notice);
 		return notice.getId();
