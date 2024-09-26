@@ -2,9 +2,9 @@ package com.project.application.notice.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.project.application.account.vo.Account;
@@ -25,21 +25,26 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeReader {
 	private final NoticeRepository noticeRepository;
 
-	@Transactional
-	@Cacheable(value = "notices", key = "#noticeId", cacheManager = "redisCacheManager")
 	public NoticeReadResponse read(Long noticeId, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));
 
 		if (notice.isNotViewed(account.getId())) {
-			notice.view(account.getId());
-			noticeRepository.save(notice);
+			increaseViewCount(notice, account);
 		}
 
 		return toResponse(notice);
 	}
 
-	private NoticeReadResponse toResponse(NoticeEntity notice) {
+	@CachePut(value = "notices", key = "#notice.id", cacheManager = "redisCacheManager")
+	public NoticeReadResponse increaseViewCount(NoticeEntity notice, Account account) {
+		notice.view(account.getId());
+		noticeRepository.save(notice);
+		return toResponse(notice);
+	}
+
+	@Cacheable(value = "notices", key = "#notice.id", cacheManager = "redisCacheManager")
+	public NoticeReadResponse toResponse(NoticeEntity notice) {
 		return NoticeReadResponse.builder()
 			.noticeId(notice.getId())
 			.title(notice.getTitle())

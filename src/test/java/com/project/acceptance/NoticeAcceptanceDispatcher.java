@@ -17,6 +17,7 @@ import com.project.application.account.domain.AccountRepository;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 @Component
 class NoticeAcceptanceDispatcher {
@@ -45,13 +46,13 @@ class NoticeAcceptanceDispatcher {
 			.extract().cookie("SESSION");
 	}
 
-	ExtractableResponse<Response> 공지사항_목록_조회() {
-		return 공지사항_목록_조회(0, 10, "createdAt,DESC");
+	ExtractableResponse<Response> 공지사항_목록_조회(String sessionId) {
+		return 공지사항_목록_조회(sessionId, 0, 10, "createdAt,DESC");
 	}
 
-	ExtractableResponse<Response> 공지사항_목록_조회(int page, int size, String sort) {
+	ExtractableResponse<Response> 공지사항_목록_조회(String sessionId, int page, int size, String sort) {
 		return RestAssured
-			.given().log().all()
+			.given().log().all().cookie("SESSION", sessionId)
 			.queryParams(Map.of(
 				"page", page,
 				"size", size,
@@ -75,6 +76,10 @@ class NoticeAcceptanceDispatcher {
 	}
 
 	ExtractableResponse<Response> 공지사항_등록(String sessionId, String title, String content) {
+		return 공지사항_등록(sessionId, title, content, List.of());
+	}
+
+	ExtractableResponse<Response> 공지사항_등록(String sessionId, String title, String content, List<Long> fileIds) {
 		return RestAssured
 			.given().log().all().cookie("SESSION", sessionId)
 			.body(Map.of(
@@ -82,7 +87,7 @@ class NoticeAcceptanceDispatcher {
 				"content", content,
 				"from", "2024-07-01T00:00:00.000Z",
 				"to", "2024-12-31T00:00:00.000Z",
-				"fileIds", List.of()
+				"fileIds", fileIds
 			))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().post("/api/notices")
@@ -90,10 +95,18 @@ class NoticeAcceptanceDispatcher {
 	}
 
 	ExtractableResponse<Response> 공지사항_수정(String sessionId, Long noticeId) {
-		return 공지사항_수정(sessionId, noticeId, "공지사항 수정 제목", "수정 내용");
+		return 공지사항_수정(sessionId, noticeId, "공지사항 수정 제목", "수정 내용", List.of());
+	}
+
+	ExtractableResponse<Response> 공지사항_수정(String sessionId, Long noticeId, List<Long> fileIds) {
+		return 공지사항_수정(sessionId, noticeId, "공지사항 수정 제목", "수정 내용", fileIds);
 	}
 
 	ExtractableResponse<Response> 공지사항_수정(String sessionId, Long noticeId, String title, String content) {
+		return 공지사항_수정(sessionId, noticeId, title, content, List.of());
+	}
+
+	ExtractableResponse<Response> 공지사항_수정(String sessionId, Long noticeId, String title, String content, List<Long> fileIds) {
 		return RestAssured
 			.given().log().all().cookie("SESSION", sessionId)
 			.body(Map.of(
@@ -101,7 +114,7 @@ class NoticeAcceptanceDispatcher {
 				"content", content,
 				"from", "2024-07-01T00:00:00.000Z",
 				"to", "2024-12-31T00:00:00.000Z",
-				"fileIds", List.of()
+				"fileIds", fileIds
 			))
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().put("/api/notices/" + noticeId)
@@ -116,16 +129,24 @@ class NoticeAcceptanceDispatcher {
 			.then().log().all().extract();
 	}
 
-	ExtractableResponse<Response> 파일_업로드() throws IOException {
+	ExtractableResponse<Response> 파일_업로드(String sessionId) throws IOException {
 		MockMultipartFile file = new MockMultipartFile(
 			"files",
 			"sample.txt",
 			MediaType.TEXT_PLAIN_VALUE,
 			"file upload except test".getBytes()
 		);
-		return RestAssured
-			.given().log().all()
-			.multiPart("files", file.getOriginalFilename(), file.getInputStream(), file.getContentType())
+		return 파일_업로드(sessionId, List.of(file));
+	}
+
+	ExtractableResponse<Response> 파일_업로드(String sessionId, List<MockMultipartFile> files) throws IOException {
+		RequestSpecification restAssured = RestAssured
+			.given().log().all().cookie("SESSION", sessionId);
+		for (MockMultipartFile file : files) {
+			restAssured
+				.multiPart("files", file.getOriginalFilename(), file.getInputStream(), file.getContentType());
+		}
+		return restAssured
 			.contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 			.when().post("/api/files")
 			.then().log().all().extract();

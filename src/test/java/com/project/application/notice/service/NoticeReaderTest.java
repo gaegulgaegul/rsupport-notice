@@ -25,11 +25,13 @@ class NoticeReaderTest {
 
 	@Autowired private NoticeReader sut;
 
+	private Account account = Account.DEFAULT;
+
 	@Test
 	void 공지사항을_조회하면_조회수가_증가한다() {
 		Long noticeId = createNotice();
 
-		NoticeReadResponse read = sut.read(noticeId, Account.DEFAULT);
+		NoticeReadResponse read = sut.read(noticeId, account);
 
 		assertThat(read.viewCount()).isEqualTo(1);
 	}
@@ -38,8 +40,8 @@ class NoticeReaderTest {
 	void 이미_조회한_사용자는_다시_조회하면_조회수가_증가하지_않는다() {
 		Long noticeId = createNotice();
 
-		sut.read(noticeId, Account.DEFAULT);
-		NoticeReadResponse read = sut.read(noticeId, Account.DEFAULT);
+		sut.read(noticeId, account);
+		NoticeReadResponse read = sut.read(noticeId, account);
 
 		assertThat(read.viewCount()).isEqualTo(1);
 	}
