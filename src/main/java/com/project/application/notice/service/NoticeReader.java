@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import com.project.application.account.vo.Account;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeReader {
 	private final NoticeRepository noticeRepository;
 
+	@Transactional
 	public NoticeReadResponse read(Long noticeId, Account account) {
 		NoticeEntity notice = noticeRepository.findById(noticeId)
 			.orElseThrow(() -> new ApplicationException(NoticeErrorCode.NO_CONTENT));

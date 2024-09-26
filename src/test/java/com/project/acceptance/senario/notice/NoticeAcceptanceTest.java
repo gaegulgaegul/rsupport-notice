@@ -25,7 +25,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 @DisplayName("공지사항 인수 테스트")
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class NoticeAcceptanceTest extends AcceptanceTest {
 	private static final String EMAIL = "user@gmail.com";
 	private static final String PASSWORD = "1234";
@@ -41,8 +40,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 		dispatcher.사용자_생성(EMAIL, PASSWORD, NAME);
 	}
 
+	@DisplayName("로그인을 하고")
 	@Nested
-	class 로그인을_하고 {
+	class Case1 {
 		private String session;
 
 		@BeforeEach
@@ -50,8 +50,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			session = dispatcher.로그인(EMAIL, PASSWORD);
 		}
 
+		@DisplayName("공지사항 목록을 조회하면 정보가 없다")
 		@Test
-		void 공지사항_목록을_조회하면_정보가_없다() {
+		void condition1() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_목록_조회(session);
 
 			assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -59,8 +60,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			assertThat(response.jsonPath().getList("content")).isEmpty();
 		}
 
+		@DisplayName("등록되지 않은 공지사항을 조회 할 수 없다")
 		@Test
-		void 등록되지_않은_공지사항을_조회_할_수_없다() {
+		void condition2() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_조회(session, NO_EXIST_NOTICE_ID);
 
 			assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -68,8 +70,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			assertThat(response.jsonPath().getString("code")).isEqualTo("N001");
 		}
 
+		@DisplayName("공지사항을 등록 할 수 있다")
 		@Test
-		void 공지사항을_등록_할_수_있다() {
+		void condition3() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_등록(session, "공지사항 등록", "공지사항 등록 내용");
 
 			assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -77,8 +80,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			assertThat(response.jsonPath().getLong("noticeId")).isNotNull();
 		}
 
+		@DisplayName("등록되지 않은 공지사항을 수정 할 수 없다")
 		@Test
-		void 등록되지_않은_공지사항을_수정_할_수_없다() {
+		void condition4() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_수정(session, NO_EXIST_NOTICE_ID);
 
 			assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -86,8 +90,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			assertThat(response.jsonPath().getString("code")).isEqualTo("N001");
 		}
 
+		@DisplayName("등록되지 않은 공지사항을 식제 할 수 없다")
 		@Test
-		void 등록되지_않은_공지사항을_식제_할_수_없다() {
+		void condition5() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_삭제(session, NO_EXIST_NOTICE_ID);
 
 			assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -95,8 +100,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			assertThat(response.jsonPath().getString("code")).isEqualTo("N001");
 		}
 
+		@DisplayName("공지사항을 등록하면")
 		@Nested
-		class 공지사항을_등록하면 {
+		class Case1_1 {
 			private Long noticeId;
 
 			@BeforeEach
@@ -105,8 +111,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 				noticeId = response.jsonPath().getLong("noticeId");
 			}
 
+			@DisplayName("공지사항을 조회 할 수 있다")
 			@Test
-			void 공지사항을_조회_할_수_있다() {
+			void condition1() {
 				ExtractableResponse<Response> response = dispatcher.공지사항_조회(session, noticeId);
 
 				String actualTitle = "공지사항 등록 제목";
@@ -117,8 +124,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 				assertThat(response.jsonPath().getString("content")).isEqualTo(actualContent);
 			}
 
+			@DisplayName("공지사항을 수정 할 수 있다")
 			@Test
-			void 공지사항을_수정_할_수_있다() {
+			void condition2() {
 				String modifyTitle = "공지사항 수정";
 				String modifyContent = "공지사항 내용 수정";
 
@@ -132,8 +140,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 				assertThat(readResponse.jsonPath().getString("content")).isEqualTo(modifyContent);
 			}
 
+			@DisplayName("공지사항을 삭제 할 수 있다")
 			@Test
-			void 공지사항을_삭제_할_수_있다() {
+			void condition3() {
 				ExtractableResponse<Response> deleteResponse = dispatcher.공지사항_삭제(session, noticeId);
 				assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
@@ -144,8 +153,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			}
 		}
 
+		@DisplayName("여러 파일을 업로드 후")
 		@Nested
-		class 여러_파일을_업로드_후 {
+		class Case1_2 {
 			private static final String NOTICE_TITLE = "파일과 공지사항 등록";
 			private static final String NOTICE_CONTENT = "파일과 공지사항 등록 내용";
 
@@ -173,8 +183,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 				modifyFileIds = secondResponse.jsonPath().getList("fileId", Long.class);
 			}
 
+			@DisplayName("파일 정보와 공지사항을 등록 할 수 있다")
 			@Test
-			void 파일_정보와_공지사항을_등록_할_수_있다() {
+			void condition1() {
 				ExtractableResponse<Response> response = dispatcher.공지사항_등록(session, NOTICE_TITLE, NOTICE_CONTENT, fileIds);
 
 				assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -185,8 +196,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 				assertThat(activeAttachFiles).allMatch(AttachFileEntity::isActive);
 			}
 
+			@DisplayName("공지사항을 10건 등록하고")
 			@Nested
-			class 공지사항을_10건_등록하고 {
+			class Case1_2_1 {
 				private static final String NOTICE_TITLE = "파일과 공지사항 등록";
 				private static final String NOTICE_CONTENT = "파일과 공지사항 등록 내용";
 
@@ -203,8 +215,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 					noticeId = noticeIds.get(0);
 				}
 
+				@DisplayName("공지사항 목록을 조회해도 조회수가 증가하지 않는다")
 				@Test
-				void 공지사항_목록을_조회해도_조회수가_증가하지_않는다() {
+				void condition1() {
 					ExtractableResponse<Response> response = dispatcher.공지사항_목록_조회(session);
 
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -212,24 +225,27 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 					assertThat(response.jsonPath().getList("content.viewCount", Integer.class)).allMatch(item -> item == 0);
 				}
 
+				@DisplayName("첫 공지사항을 조회하면 파일 목록을 확인할 수 있다")
 				@Test
-				void 첫_공지사항을_조회하면_파일_목록을_확인할_수_있다() {
+				void condition2() {
 					ExtractableResponse<Response> response = dispatcher.공지사항_조회(session, noticeId);
 
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 					assertThat(response.jsonPath().getList("files.fileId", Long.class)).allMatch(fileIds::contains);
 				}
 
+				@DisplayName("첫 공지사항을 조회하면 조회수가 증가한다")
 				@Test
-				void 첫_공지사항을_조회하면_조회수가_증가한다() {
+				void condition3() {
 					ExtractableResponse<Response> response = dispatcher.공지사항_조회(session, noticeId);
 
 					assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 					assertThat(response.jsonPath().getInt("viewCount")).isEqualTo(1);
 				}
 
+				@DisplayName("첫 공지사항을 두번 조회하면 사용자가 같은 경우 조회수가 1만 증가한다")
 				@Test
-				void 첫_공지사항을_두번_조회하면_사용자가_같은_경우_조회수가_1만_증가한다() {
+				void condition4() {
 					dispatcher.공지사항_조회(session, noticeId);
 					ExtractableResponse<Response> response = dispatcher.공지사항_조회(session, noticeId);
 
@@ -237,8 +253,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 					assertThat(response.jsonPath().getInt("viewCount")).isEqualTo(1);
 				}
 
+				@DisplayName("첫 공지사항의 파일 정보를 대체할 수 있다")
 				@Test
-				void 첫_공지사항의_파일_정보를_대체할_수_있다() {
+				void condition5() {
 					ExtractableResponse<Response> modifyResponse = dispatcher.공지사항_수정(session, noticeId, modifyFileIds);
 					assertThat(modifyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
@@ -254,8 +271,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 					assertThat(deactivateAttachFiles).allMatch(AttachFileEntity::isDeactivate);
 				}
 
+				@DisplayName("첫 공지사항을 삭제하면 첨부파일은 비활성으로 변경된다")
 				@Test
-				void 첫_공지사항을_삭제하면_첨부파일은_비활성으로_변경된다() {
+				void condition6() {
 					ExtractableResponse<Response> deleteResponse = dispatcher.공지사항_삭제(session, noticeId);
 					assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
@@ -268,8 +286,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 					assertThat(attachFiles).allMatch(AttachFileEntity::isDeactivate);
 				}
 
+				@DisplayName("다른 사용자로 로그인 후에")
 				@Nested
-				class 다른_사용자로_로그인_후에 {
+				class Case1_2_1_1 {
 					private static final String ANOTHER_EMAIL = "another@gmail.com";
 					private static final String ANOTHER_PASSWORD = "1234";
 					private static final String ANOTHER_NAME = "다른 테스트 사용자";
@@ -282,16 +301,18 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 						anotherSession = dispatcher.로그인(ANOTHER_EMAIL, ANOTHER_PASSWORD);
 					}
 
+					@DisplayName("첫 공지사항을 조회하면 조회수가 증가한다")
 					@Test
-					void 기존_사용자의_첫_공지사항을_조회하면_조회수가_증가한다() {
+					void condition1() {
 						ExtractableResponse<Response> response = dispatcher.공지사항_조회(anotherSession, noticeId);
 
 						assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 						assertThat(response.jsonPath().getInt("viewCount")).isEqualTo(1);
 					}
 
+					@DisplayName("서로 같은 공지사항을 조회하면 조회수가 두번 증가한다")
 					@Test
-					void 기존_사용자와_같은_공지사항을_조회하면_조회수가_두번_증가한다() {
+					void condition2() {
 						dispatcher.공지사항_조회(session, noticeId);
 						ExtractableResponse<Response> response = dispatcher.공지사항_조회(anotherSession, noticeId);
 
@@ -299,8 +320,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 						assertThat(response.jsonPath().getInt("viewCount")).isEqualTo(2);
 					}
 
+					@DisplayName("기존 사용자의 공지사항을 수정할 수 없다")
 					@Test
-					void 기존_사용자의_공지사항을_수정할_수_없다() {
+					void condition3() {
 						ExtractableResponse<Response> response = dispatcher.공지사항_수정(anotherSession, noticeId);
 
 						assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -308,8 +330,9 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 						assertThat(response.jsonPath().getString("code")).isEqualTo("N003");
 					}
 
+					@DisplayName("기존 사용자의 공지사항을 삭제할 수 없다")
 					@Test
-					void 기존_사용자의_공지사항을_삭제할_수_없다() {
+					void condition4() {
 						ExtractableResponse<Response> response = dispatcher.공지사항_삭제(anotherSession, noticeId);
 
 						assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -321,13 +344,15 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 		}
 	}
 
+	@DisplayName("로그인을 하지 않고")
 	@Nested
-	class 로그인을_하지_않고 {
+	class Case2 {
 
 		private String noSession = null;
 
+		@DisplayName("공지사항 목록을 조회하면 정보가 없다")
 		@Test
-		void 공지사항_목록을_조회하면_정보가_없다() {
+		void condition1() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_목록_조회(noSession);
 
 			assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -335,43 +360,49 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 			assertThat(response.jsonPath().getList("content")).isEmpty();
 		}
 
+		@DisplayName("공지사항을 조회하면 인증 에러가 발생한다")
 		@Test
-		void 공지사항을_조회하면_인증_에러가_발생한다() {
+		void condition2() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_조회(noSession, NO_EXIST_NOTICE_ID);
 
 			assertThatNoAuthentication(response);
 		}
 
+		@DisplayName("공지사항을 등록하면 인증 에러가 발생한다")
 		@Test
-		void 공지사항을_등록하면_인증_에러가_발생한다() {
+		void condition3() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_등록(noSession);
 
 			assertThatNoAuthentication(response);
 		}
 
+		@DisplayName("공지사항을 수정하면 인증 에러가 발생한다")
 		@Test
-		void 공지사항을_수정하면_인증_에러가_발생한다() {
+		void condition4() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_수정(noSession, NO_EXIST_NOTICE_ID);
 
 			assertThatNoAuthentication(response);
 		}
 
+		@DisplayName("공지사항을 삭제하면 인증 에러가 발생한다")
 		@Test
-		void 공지사항을_삭제하면_인증_에러가_발생한다() {
+		void condition5() {
 			ExtractableResponse<Response> response = dispatcher.공지사항_삭제(noSession, NO_EXIST_NOTICE_ID);
 
 			assertThatNoAuthentication(response);
 		}
 
+		@DisplayName("파일을 업로드하면 인증 에러가 발생한다")
 		@Test
-		void 파일을_업로드하면_인증_에러가_발생한다() throws IOException {
+		void condition6() throws IOException {
 			ExtractableResponse<Response> response = dispatcher.파일_업로드(noSession);
 
 			assertThatNoAuthentication(response);
 		}
 
+		@DisplayName("파일을 다운로드하면 인증 에러가 발생한다")
 		@Test
-		void 파일을_다운로드하면_인증_에러가_발생한다() {
+		void condition7() {
 			ExtractableResponse<Response> response = dispatcher.파일_다운로드(noSession, NO_EXIST_FILE_ID);
 
 			assertThatNoAuthentication(response);
