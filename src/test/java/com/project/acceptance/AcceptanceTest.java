@@ -2,6 +2,7 @@ package com.project.acceptance;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,9 +18,14 @@ class AcceptanceTest {
 	@Autowired private CleanUpFile cleanUpFile;
 
 	@BeforeEach
-	public void acceptanceSetUp() throws IOException {
+	public void acceptanceSetUp() {
 		RestAssured.port = port;
 		cleanUpDatabase.execute();
+
+	}
+
+	@AfterEach
+	void tearDown() throws IOException {
 		cleanUpFile.execute();
 	}
 }

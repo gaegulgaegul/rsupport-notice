@@ -19,7 +19,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import com.project.application.file.domain.AttachFileEntity;
 import com.project.application.file.domain.AttachFileRepository;
-import com.project.application.notice.domain.repository.NoticeRepository;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -34,7 +33,6 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 
 	@Autowired private NoticeAcceptanceDispatcher dispatcher;
 	@Autowired private AttachFileRepository attachFileRepository;
-	@Autowired private NoticeRepository noticeRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -297,6 +295,24 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 
 						assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 						assertThat(response.jsonPath().getInt("viewCount")).isEqualTo(2);
+					}
+
+					@Test
+					void 기존_사용자의_공지사항을_수정할_수_없다() {
+						ExtractableResponse<Response> response = dispatcher.공지사항_수정(anotherSession, noticeId);
+
+						assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+						assertThat(response.jsonPath().getInt("status")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+						assertThat(response.jsonPath().getString("code")).isEqualTo("N003");
+					}
+
+					@Test
+					void 기존_사용자의_공지사항을_삭제할_수_없다() {
+						ExtractableResponse<Response> response = dispatcher.공지사항_삭제(anotherSession, noticeId);
+
+						assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+						assertThat(response.jsonPath().getInt("status")).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+						assertThat(response.jsonPath().getString("code")).isEqualTo("N003");
 					}
 				}
 			}
