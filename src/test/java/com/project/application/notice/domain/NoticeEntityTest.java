@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.project.application.account.vo.Account;
 
-@DisplayName("공지사항 등록 테스트")
+@DisplayName("공지사항 단위 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class NoticeEntityTest {
 	public static final Long CREATED_BY = 1L;
