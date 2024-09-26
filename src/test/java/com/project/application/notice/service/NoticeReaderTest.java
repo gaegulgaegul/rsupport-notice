@@ -16,7 +16,7 @@ import com.project.application.notice.domain.NoticeEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.application.notice.dto.response.NoticeReadResponse;
 
-@DisplayName("공지사항 조회 테스트")
+@DisplayName("공지사항 조회 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest
 class NoticeReaderTest {
