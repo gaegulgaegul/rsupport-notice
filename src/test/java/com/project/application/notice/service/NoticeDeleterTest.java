@@ -20,7 +20,7 @@ import com.project.application.notice.domain.NoticeFileEntity;
 import com.project.application.notice.domain.repository.NoticeRepository;
 import com.project.core.exception.ApplicationException;
 
-@DisplayName("공지사항 삭제 테스트")
+@DisplayName("공지사항 삭제 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest
 class NoticeDeleterTest {

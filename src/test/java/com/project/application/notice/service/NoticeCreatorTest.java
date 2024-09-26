@@ -25,7 +25,7 @@ import com.project.application.notice.dto.request.NoticeCreateRequest;
 import com.project.application.notice.dto.response.NoticeCreateResponse;
 import com.project.core.exception.ApplicationException;
 
-@DisplayName("공지사항 등록 테스트")
+@DisplayName("공지사항 등록 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest
 @Transactional
