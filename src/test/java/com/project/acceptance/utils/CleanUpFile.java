@@ -1,4 +1,4 @@
-package com.project.acceptance;
+package com.project.acceptance.utils;
 
 import java.io.File;
 import java.io.IOException;

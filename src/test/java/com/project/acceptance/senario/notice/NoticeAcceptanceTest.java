@@ -1,4 +1,4 @@
-package com.project.acceptance;
+package com.project.acceptance.senario.notice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import com.project.acceptance.utils.AcceptanceTest;
 import com.project.application.file.domain.AttachFileEntity;
 import com.project.application.file.domain.AttachFileRepository;
 
@@ -30,6 +31,7 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 	private static final String PASSWORD = "1234";
 	private static final String NAME = "테스트 사용자";
 	private static final Long NO_EXIST_NOTICE_ID = Long.MAX_VALUE;
+	private static final Long NO_EXIST_FILE_ID = Long.MAX_VALUE;
 
 	@Autowired private NoticeAcceptanceDispatcher dispatcher;
 	@Autowired private AttachFileRepository attachFileRepository;
@@ -364,6 +366,13 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 		@Test
 		void 파일을_업로드하면_인증_에러가_발생한다() throws IOException {
 			ExtractableResponse<Response> response = dispatcher.파일_업로드(noSession);
+
+			assertThatNoAuthentication(response);
+		}
+
+		@Test
+		void 파일을_다운로드하면_인증_에러가_발생한다() {
+			ExtractableResponse<Response> response = dispatcher.파일_다운로드(noSession, NO_EXIST_FILE_ID);
 
 			assertThatNoAuthentication(response);
 		}

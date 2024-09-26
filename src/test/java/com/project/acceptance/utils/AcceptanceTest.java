@@ -1,4 +1,4 @@
-package com.project.acceptance;
+package com.project.acceptance.utils;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import io.restassured.RestAssured;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AcceptanceTest {
+public class AcceptanceTest {
 	@LocalServerPort int port;
 
 	@Autowired private CleanUpDatabase cleanUpDatabase;

@@ -10,22 +10,24 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.project.application.account.vo.Account;
 import com.project.core.exception.ApplicationException;
+import com.project.core.support.session.SessionManager;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class AuthorizationAspect {
+	private final SessionManager sessionManager;
 
 	@Pointcut("@annotation(com.project.core.support.annotation.Authorization)")
 	public void pointCut() {}
 
 	@Before("pointCut()")
 	public void around(JoinPoint joinPoint) {
-		HttpSession session = getSession();
-		if (session == null) {
-			throw new ApplicationException(AuthorizationErrorCode.NO_SIGN_IN);
-		}
+		HttpSession session = sessionManager.session()
+			.orElseThrow(() -> new ApplicationException(AuthorizationErrorCode.NO_SIGN_IN));
 
 		Account account = (Account) session.getAttribute("account");
 
@@ -34,10 +36,5 @@ public class AuthorizationAspect {
 				((Account)arg).copy(account);
 			}
 		}
-	}
-
-	private HttpSession getSession() {
-		ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		return (attributes != null) ? attributes.getRequest().getSession(false) : null;
 	}
 }

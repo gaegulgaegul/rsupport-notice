@@ -2,8 +2,8 @@ package com.project.application.file.endpoint;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.application.file.dto.response.FileDownloadResponse;
@@ -22,7 +22,7 @@ class FileDownloadEndpoint {
 
 	@Authorization
 	@Operation(summary = "파일 다운로드")
-	@PostMapping("/api/files/{fileId}")
+	@GetMapping("/api/files/{fileId}")
 	ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
 		FileDownloadResponse response = fileDownloader.download(fileId);
 		return ResponseEntity.ok()

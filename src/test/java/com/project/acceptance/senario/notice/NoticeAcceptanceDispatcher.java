@@ -1,4 +1,4 @@
-package com.project.acceptance;
+package com.project.acceptance.senario.notice;
 
 import java.io.IOException;
 import java.util.List;
@@ -149,6 +149,14 @@ class NoticeAcceptanceDispatcher {
 		return restAssured
 			.contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 			.when().post("/api/files")
+			.then().log().all().extract();
+	}
+
+	ExtractableResponse<Response> 파일_다운로드(String sessionId, Long fileId) {
+		return RestAssured
+			.given().log().all().cookie("SESSION", sessionId)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/api/files/" + fileId)
 			.then().log().all().extract();
 	}
 }
