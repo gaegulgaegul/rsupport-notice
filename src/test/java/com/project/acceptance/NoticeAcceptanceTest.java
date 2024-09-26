@@ -2,7 +2,7 @@ package com.project.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
+import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,12 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import com.project.application.account.domain.AccountEntity;
-import com.project.application.account.domain.AccountRepository;
-
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -147,8 +142,12 @@ class NoticeAcceptanceTest extends AcceptanceTest {
 		}
 
 		@Test
-		void 파일을_업로드하면_인증_에러가_발생한다() {
+		void 파일을_업로드하면_인증_에러가_발생한다() throws IOException {
+			ExtractableResponse<Response> response = dispatcher.파일_업로드();
 
+			assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+			assertThat(response.jsonPath().getInt("status")).isEqualTo(401);
+			assertThat(response.jsonPath().getString("code")).isEqualTo("AZ001");
 		}
 	}
 }

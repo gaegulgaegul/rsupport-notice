@@ -1,10 +1,12 @@
 package com.project.acceptance;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,7 @@ import com.project.application.account.domain.AccountEntity;
 import com.project.application.account.domain.AccountRepository;
 
 import io.restassured.RestAssured;
+import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -109,6 +112,21 @@ class NoticeAcceptanceDispatcher {
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().delete("/api/notices/" + noticeId)
+			.then().log().all().extract();
+	}
+
+	ExtractableResponse<Response> 파일_업로드() throws IOException {
+		MockMultipartFile file = new MockMultipartFile(
+			"files",
+			"sample.txt",
+			MediaType.TEXT_PLAIN_VALUE,
+			"file upload except test".getBytes()
+		);
+		return RestAssured
+			.given().log().all()
+			.multiPart("files", file.getOriginalFilename(), file.getInputStream(), file.getContentType())
+			.contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+			.when().post("/api/files")
 			.then().log().all().extract();
 	}
 }
