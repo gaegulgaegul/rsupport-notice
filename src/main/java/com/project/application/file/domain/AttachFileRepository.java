@@ -10,7 +10,7 @@ public interface AttachFileRepository extends JpaRepository<AttachFileEntity, Lo
 
 	List<AttachFileEntity> findAllByIdIn(List<Long> fileIds);
 
-	List<AttachFileEntity> findAllByActiveAndCreatedAtBefore(Boolean isActive, LocalDateTime createdAt);
+	List<AttachFileEntity> findAllByActiveAndRemoveAndCreatedAtBefore(Boolean isActive, Boolean isRemove, LocalDateTime createdAt);
 
 	Optional<AttachFileEntity> findByIdAndRemove(Long id, Boolean isRemove);
 }
