@@ -21,7 +21,7 @@ import com.project.core.support.session.SessionManager;
 
 import jakarta.servlet.http.HttpSession;
 
-@DisplayName("AES256 암복호화 기능 테스트")
+@DisplayName("로그인 기능 테스트")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest
 class AccountSignInProcessorTest {
