@@ -21,7 +21,7 @@ public class FileDownloader {
 	private final FileManager fileManager;
 
 	public FileDownloadResponse download(Long fileId) {
-		AttachFileEntity attachFile = attachFileRepository.findById(fileId)
+		AttachFileEntity attachFile = attachFileRepository.findByIdAndRemove(fileId, false)
 			.orElseThrow(() -> new ApplicationException(AttachFileErrorCode.NO_CONTENT));
 		LoadFile loadFile = fileManager.load(attachFile.getDirPath(), attachFile.getPhysicalFilename(), attachFile.getExtension());
 		return toResponse(attachFile.getOriginalFilename(), loadFile);

@@ -60,12 +60,18 @@ public class AttachFileEntity extends OperatorEntity {
 	@Column(name = "active_flag")
 	private Boolean active = false;
 
+	@Builder.Default
+	@Column(name = "remove_flag")
+	private Boolean remove = false;
+
 	public void active() {
 		this.active = true;
+		this.remove = false;
 	}
 
 	public void deactivate() {
 		this.active = false;
+		this.remove = true;
 	}
 
 	public boolean isActive() {

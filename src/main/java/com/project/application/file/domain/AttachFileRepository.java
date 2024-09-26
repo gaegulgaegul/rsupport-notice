@@ -2,6 +2,7 @@ package com.project.application.file.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,6 @@ public interface AttachFileRepository extends JpaRepository<AttachFileEntity, Lo
 	List<AttachFileEntity> findAllByIdIn(List<Long> fileIds);
 
 	List<AttachFileEntity> findAllByActiveAndCreatedAtBefore(Boolean isActive, LocalDateTime createdAt);
+
+	Optional<AttachFileEntity> findByIdAndRemove(Long id, Boolean isRemove);
 }
