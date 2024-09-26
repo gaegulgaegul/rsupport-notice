@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +15,6 @@ import com.project.application.account.domain.AccountEntity;
 import com.project.application.account.domain.AccountRepository;
 
 import io.restassured.RestAssured;
-import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
@@ -32,7 +32,7 @@ class NoticeAcceptanceDispatcher {
 		accountRepository.save(account);
 	}
 
-	ExtractableResponse<Response> 로그인(String email, String password) {
+	String 로그인(String email, String password) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -41,7 +41,8 @@ class NoticeAcceptanceDispatcher {
 				"password", password
 			))
 			.when().post("/api/sign/in")
-			.then().log().all().extract();
+			.then().log().all().statusCode(HttpStatus.OK.value())
+			.extract().cookie("SESSION");
 	}
 
 	ExtractableResponse<Response> 공지사항_목록_조회() {
@@ -61,21 +62,21 @@ class NoticeAcceptanceDispatcher {
 			.then().log().all().extract();
 	}
 
-	ExtractableResponse<Response> 공지사항_조회(Long noticeId) {
+	ExtractableResponse<Response> 공지사항_조회(String sessionId, Long noticeId) {
 		return RestAssured
-			.given().log().all()
+			.given().log().all().cookie("SESSION", sessionId)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().get("/api/notices/" + noticeId)
 			.then().log().all().extract();
 	}
 
-	ExtractableResponse<Response> 공지사항_등록() {
-		return 공지사항_등록("공지사항 등록 제목", "등록 내용");
+	ExtractableResponse<Response> 공지사항_등록(String sessionId) {
+		return 공지사항_등록(sessionId, "공지사항 등록 제목", "등록 내용");
 	}
 
-	ExtractableResponse<Response> 공지사항_등록(String title, String content) {
+	ExtractableResponse<Response> 공지사항_등록(String sessionId, String title, String content) {
 		return RestAssured
-			.given().log().all()
+			.given().log().all().cookie("SESSION", sessionId)
 			.body(Map.of(
 				"title", title,
 				"content", content,
@@ -88,13 +89,13 @@ class NoticeAcceptanceDispatcher {
 			.then().log().all().extract();
 	}
 
-	ExtractableResponse<Response> 공지사항_수정(Long noticeId) {
-		return 공지사항_수정(noticeId, "공지사항 수정 제목", "수정 내용");
+	ExtractableResponse<Response> 공지사항_수정(String sessionId, Long noticeId) {
+		return 공지사항_수정(sessionId, noticeId, "공지사항 수정 제목", "수정 내용");
 	}
 
-	ExtractableResponse<Response> 공지사항_수정(Long noticeId, String title, String content) {
+	ExtractableResponse<Response> 공지사항_수정(String sessionId, Long noticeId, String title, String content) {
 		return RestAssured
-			.given().log().all()
+			.given().log().all().cookie("SESSION", sessionId)
 			.body(Map.of(
 				"title", title,
 				"content", content,
@@ -107,9 +108,9 @@ class NoticeAcceptanceDispatcher {
 			.then().log().all().extract();
 	}
 
-	ExtractableResponse<Response> 공지사항_삭제(Long noticeId) {
+	ExtractableResponse<Response> 공지사항_삭제(String sessionId, Long noticeId) {
 		return RestAssured
-			.given().log().all()
+			.given().log().all().cookie("SESSION", sessionId)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().delete("/api/notices/" + noticeId)
 			.then().log().all().extract();

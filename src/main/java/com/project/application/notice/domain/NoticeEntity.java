@@ -98,7 +98,6 @@ public class NoticeEntity extends OperatorEntity {
 
 	public void linkFiles(List<NoticeFileEntity> newFiles) {
 		if (ObjectUtils.isEmpty(this.files)) {
-			this.files = new ArrayList<>();
 			this.files.addAll(newFiles);
 			this.files.forEach(item -> item.link(this.id));
 			return;

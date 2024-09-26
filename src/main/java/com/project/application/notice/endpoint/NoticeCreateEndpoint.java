@@ -28,8 +28,8 @@ class NoticeCreateEndpoint {
 	@Authorization
 	@Operation(summary = "공지사항 생성")
 	@PostMapping("/api/notices")
-	ResponseEntity<Void> createNotice(@Parameter(hidden = true) Account account, @RequestBody @Valid NoticeCreateRequest request) {
+	ResponseEntity<NoticeCreateResponse> createNotice(@Parameter(hidden = true) Account account, @RequestBody @Valid NoticeCreateRequest request) {
 		NoticeCreateResponse response = noticeCreator.create(request, account);
-		return ResponseEntity.created(URI.create("/api/notices/" + response.noticeId())).build();
+		return ResponseEntity.created(URI.create("/api/notices/" + response.noticeId())).body(response);
 	}
 }
