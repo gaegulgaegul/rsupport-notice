@@ -12,13 +12,15 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class initData implements ApplicationRunner {
+public class InitData implements ApplicationRunner {
 	private final AccountRepository accountRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		String decryptedPassword = passwordEncoder.encode("1234");
+	public void run(ApplicationArguments args) {
+		String rawPassword = "1234";
+		String decryptedPassword = passwordEncoder.encode(rawPassword);
+
 		for (int i = 1; i < 10; i++) {
 			AccountEntity account = AccountEntity.builder()
 				.email("user%d@gmail.com".formatted(i))
@@ -28,4 +30,5 @@ public class initData implements ApplicationRunner {
 			accountRepository.save(account);
 		}
 	}
+
 }
