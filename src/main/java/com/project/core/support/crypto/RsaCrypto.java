@@ -49,6 +49,10 @@ public class RsaCrypto {
 			byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
 			return new String(decryptedBytes);
 		} catch (Exception e) {
+			/*
+			 * 실제 프로젝트라면 해당 값을 반환하지 않고 예외를 발생시키지만,
+			 * 테스트를 쉽게 하기 위해 이메일/비밀번호를 매개변수로 전달하고 있습니다.
+			 */
 			return encryptedText;
 		}
 	}
