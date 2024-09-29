@@ -2,7 +2,6 @@
 
 
 ## 기술 스택
-<hr>
 
 ```
 Java 21
@@ -13,7 +12,6 @@ Embedded-Redis
 ```
 
 ## 실행방법
-<hr>
 
 1. 터미널을 실행해 git clone 명령을 통해 프로젝트를 가져옵니다.
 ```
@@ -54,12 +52,10 @@ java -jar build/libs/rsupport-notice-0.0.1-SNAPSHOT.jar
   > get notices::{noticeId}
   ```
 ## 시나리오
-<hr>
 
 ![캡처](./src/main/resources/uml/notice_flow_chart.png)
 
 ## 문제해결
-<hr>
 
 ### 공지사항 - 파일의 관계
 
