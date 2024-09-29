@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor 사용자 as account
+participant 화면 as front
+control "로그인" as login
+control "파일 업로드" as file_upload
+control "공지사항 목록 조회" as read_notices
+control "공지사항 생성" as create_notice
+control "공지사항 조회" as read_notice
+control "공지사항 수정" as modify_notice
+control "공지사항 삭제" as delete_notice
+
+account -> front: 로그인
+front -> login: 로그인 API 호출
+login -> front: 로그인 세션 생성 및 인증 확인
+activate front
+
+front -> read_notices: 공지사항 목록 조회 API 호출
+read_notices -> front: 공지사항 목록 조회 응답 전달
+front -> account: 공지사항 목록 조회 결과 노출
+
+account -> front: 공지사항 정보 작성 및 파일 첨부
+front -> file_upload: 첨부된 파일 정보 전달
+file_upload -> front: 파일 업로드 응답 결과 반환
+front -> front: 파일 업로드 응답 정보를 요청 파라미터에 포함
+front -> create_notice: 공지사항 생성 API 호출
+create_notice -> front: 공지사항 생성 응답 전달
+front -> account: 공지사항 등록 완료 전달
+
+account -> front: 공지사항 조회
+front -> read_notice: 공지사항 조회 API 호출
+read_notice -> read_notice: 현재 사용자가 처음 공지사항을 조회하면 조회 수 증가
+read_notice -> front: 공지사항 조회 응답 결과 반환
+front -> account: 공지사항 조회 결과 노출
+
+account -> front: 공지사항 정보 수정 및 파일 재첨부
+front -> file_upload: 첨부된 파일 정보 전달
+file_upload -> front: 파일 업로드 응답 결과 반환
+front -> front: 파일 업로드 응답 정보를 요청 파라미터에 포함
+front -> modify_notice: 공지사항 수정 API 호출
+modify_notice -> front: 공지사항 수정 응답 전달
+front -> account: 공지사항 수정 완료 전달
+
+account -> front: 공지사항 삭제
+front -> delete_notice: 공지사항 삭제 API 호출
+delete_notice -> front: 공지사항 삭제 응답 전달
+front -> account: 공지사항 삭제 완료 전달
+
+account -> front: 로그아웃
+front -> login: 로그아웃 API 호출
+login -> front: 세션 삭제
+
+@enduml
